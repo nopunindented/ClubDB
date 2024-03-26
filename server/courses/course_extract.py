@@ -5,11 +5,11 @@ from bs4 import BeautifulSoup
 import random
 import undetected_chromedriver as uc
 from seleniumwire import webdriver
+from selenium.webdriver.common.by import By
 
 class CourseExtract():
 
     def __init__(self):
-        self.DRIVER_PATH = "C:/Users/umerf\Downloads\chrome-win64\chrome-win64\chrome.exe"
         self.list_of_courses = []
     
     def getProxies(self):
@@ -48,6 +48,10 @@ class CourseExtract():
 
         driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
         driver.get('https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339')
+        h1 = driver.find_elements(By.CLASS_NAME, 'acalog-course')
+        for i in range(0, len(h1)):
+            print(h1[i].text)
+        driver.quit()
 
     def run(self):
         self.extract_group_two()

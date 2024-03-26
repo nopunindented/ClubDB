@@ -2,6 +2,9 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import requests
 from bs4 import BeautifulSoup
+import random
+import undetected_chromedriver as uc
+from seleniumwire import webdriver
 
 class CourseExtract():
 
@@ -24,7 +27,7 @@ class CourseExtract():
 
         return proxies
     
-    def extract(self):
+    def extract_group_two(self):
         list_of_proxies = self.getProxies()
 
         options = Options()
@@ -32,11 +35,22 @@ class CourseExtract():
         for i in range(0, len(list_of_proxies)):
             options.add_argument(f'--proxy-server={list_of_proxies[i]}')
 
-        driver = webdriver.Chrome(options=options)
-        driver.get('https://apps.ualberta.ca/catalogue/course/ece/202')
+        random_proxy = random.choice(list_of_proxies)      
+
+        seleniumwire_options = {
+            'proxy': {
+                'http': f'{random_proxy}',
+                'https': f'{random_proxy}',
+            },
+        }
+
+        chrome_options = webdriver.ChromeOptions()
+
+        driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
+        driver.get('https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339')
 
     def run(self):
-        self.extract()
+        self.extract_group_two()
 
 if __name__ == "__main__":
     extract_object = CourseExtract()

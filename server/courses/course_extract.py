@@ -121,10 +121,14 @@ class CourseExtract():
         course_url = 'https://apps.ualberta.ca/catalogue/course/' + split_course[0].lower() + '/' + split_course[1]
 
         driver.get(course_url)
+
+        text = driver.find_element("xpath", "//div[@class='container']/p[2]").text
+
+        print(text)
     
     def run(self):
         pass
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor
-    extract_object.run()
+    extract_object.course_description_extract('ECE 202')

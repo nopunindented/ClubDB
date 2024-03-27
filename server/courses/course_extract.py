@@ -6,6 +6,7 @@ import random
 import undetected_chromedriver as uc
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
+import os
 
 class CourseExtract():
 
@@ -79,16 +80,36 @@ class CourseExtract():
             try:
                 value = int(split_elective[1])
                 if (split_elective[0] + ' ' + split_elective[1]) not in list_of_non_grp2s:
-                    list_of_grp2.append(split_elective[0] + ' ' + split_elective[1])
+                    list_of_grp2.append(split_elective[0] + ' ' + split_elective[1] + "\n")
             except ValueError:
                 pass
 
-        print(list_of_grp2)
-
         driver.quit()
 
+        return list_of_grp2
+    
+    def create_grp2_text(self):
+        if self.study_program == 'softe':
+            file_path = 'courses_softe/software_group2_electives.txt'
+
+            if not os.path.exists(file_path):
+                with open(file_path, 'w') as file:
+                    file.writelines(self.extract_group_two())
+        elif self.study_program == 'compe':
+            file_path = 'courses_compe/compe_group2_electives.txt'
+            
+            if not os.path.exists(file_path):
+                with open(file_path, 'w') as file:
+                    file.writelines(self.extract_group_two())
+        elif self.study_program == 'nano':
+            file_path = 'courses_compe_nano/compe_nano_group2_electives.txt'
+            
+            if not os.path.exists(file_path):
+                with open(file_path, 'w') as file:
+                    file.writelines(self.extract_group_two())
+
     def run(self):
-        self.extract_group_two()
+        self.create_grp2_text()
 
 if __name__ == "__main__":
     extract_object = CourseExtract('nano') # can put compe, software, or nano in the constructor

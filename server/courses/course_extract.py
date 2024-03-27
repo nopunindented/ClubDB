@@ -127,15 +127,17 @@ class CourseExtract():
         prerequisites = ""
 
         for i in range(0, len(course_info)):
-            if "Prerequisites" in course_info[i]:
+            if "Prerequisite" in course_info[i]:
                 prerequisites = course_info.pop(i)
                 break
+        
+        course_description = '.'.join(course_info)
 
-        print(course_info)
+        print(course_description)
     
     def run(self):
         pass
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor
-    extract_object.course_description_extract('ECE 202')
+    extract_object.course_description_extract('CMPUT 250')

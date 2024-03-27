@@ -80,7 +80,11 @@ class CourseExtract():
             try:
                 value = int(split_elective[1])
                 if (split_elective[0] + ' ' + split_elective[1]) not in list_of_non_grp2s:
-                    list_of_grp2.append(split_elective[0] + ' ' + split_elective[1] + "\n")
+                    if i<len(h1)-1:
+                        list_of_grp2.append(split_elective[0] + ' ' + split_elective[1] + "\n")
+                    else:
+                        list_of_grp2.append(split_elective[0] + ' ' + split_elective[1])
+
             except ValueError:
                 pass
 
@@ -89,7 +93,7 @@ class CourseExtract():
         return list_of_grp2
     
     def create_grp2_text(self):
-        if self.study_program == 'softe':
+        if self.study_program == 'software':
             file_path = 'courses_softe/software_group2_electives.txt'
 
             if not os.path.exists(file_path):
@@ -112,5 +116,5 @@ class CourseExtract():
         self.create_grp2_text()
 
 if __name__ == "__main__":
-    extract_object = CourseExtract('nano') # can put compe, software, or nano in the constructor
+    extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor
     extract_object.run()

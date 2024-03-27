@@ -122,9 +122,16 @@ class CourseExtract():
 
         driver.get(course_url)
 
-        text = driver.find_element("xpath", "//div[@class='container']/p[2]").text
+        course_info = (driver.find_element("xpath", "//div[@class='container']/p[2]").text).split('.')
 
-        print(text)
+        prerequisites = ""
+
+        for i in range(0, len(course_info)):
+            if "Prerequisites" in course_info[i]:
+                prerequisites = course_info.pop(i)
+                break
+
+        print(course_info)
     
     def run(self):
         pass

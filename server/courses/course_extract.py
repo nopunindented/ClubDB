@@ -31,17 +31,12 @@ class CourseExtract():
             else:
                 pass
 
-        return proxies
-    
-    def extract_group_two(self):
-        list_of_proxies = self.getProxies()
-
         options = Options()
 
-        for i in range(0, len(list_of_proxies)):
-            options.add_argument(f'--proxy-server={list_of_proxies[i]}')
+        for i in range(0, len(proxies)):
+            options.add_argument(f'--proxy-server={proxies[i]}')
 
-        random_proxy = random.choice(list_of_proxies)      
+        random_proxy = random.choice(proxies)      
 
         seleniumwire_options = {
             'proxy': {
@@ -52,6 +47,12 @@ class CourseExtract():
 
         chrome_options = webdriver.ChromeOptions()
         driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
+
+        return driver
+    
+    def extract_group_two(self):
+
+        driver = self.getProxies()
 
         url_to_search = ''
         list_of_non_grp2s = []
@@ -111,9 +112,18 @@ class CourseExtract():
             if not os.path.exists(file_path):
                 with open(file_path, 'w') as file:
                     file.writelines(self.extract_group_two())
+    
+    def course_description_extract(self, course_name):
 
+        driver = self.getProxies()
+
+        split_course = course_name.split()
+        course_url = 'https://apps.ualberta.ca/catalogue/course/' + split_course[0].lower() + '/' + split_course[1]
+
+        driver.get(course_url)
+    
     def run(self):
-        self.create_grp2_text()
+        pass
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor

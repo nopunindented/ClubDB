@@ -191,14 +191,19 @@ class CourseExtract():
                 # Adding prereqs
                 print(terms_and_profs)
                 prerequisites_paragraph = document.add_paragraph(style='List Bullet')
-                if "Prerequisites" not in prerequisites:
+                if "Prerequisites" not in prerequisites and len(prerequisites.strip()) > 0:
                     run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
                     run_prerequisites.bold = True
                     prerequisites_paragraph.add_run(prerequisites.replace("Prerequisite: ", "") + "\n")
-                else:
+                elif "Prerequisites" in prerequisites and len(prerequisites.strip()) > 0:
                     run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                     run_prerequisites.bold = True
                     prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
+                elif len(prerequisites.strip()) == 0:
+                    print(course)
+                    run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
+                    run_prerequisites.bold = True
+                    prerequisites_paragraph.add_run("None" + "\n")
                 
                 # Adding terms
                 terms_paragraph = document.add_paragraph(style='List Bullet')
@@ -215,7 +220,7 @@ class CourseExtract():
                 
                 # Adding professors
                 professors_paragraph = document.add_paragraph(style='List Bullet')
-                run_terms = professors_paragraph.add_run("Instructor(s)" + "\n")
+                run_terms = professors_paragraph.add_run("Instructor(s):" + "\n")
                 run_terms.bold = True
 
                 for term, instructor in terms_and_profs.items():
@@ -223,7 +228,9 @@ class CourseExtract():
                         professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
                     elif len(instructor)>1:
                         for i in range(0, len(instructor)):
-                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
+                            if i==len(instructor) - 1:
+                                professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
                     else:
                         professors_paragraph.add_run("Instructor(s) undecided for " + term + ")")
 

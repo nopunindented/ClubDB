@@ -164,7 +164,7 @@ class CourseExtract():
         
         return term_and_profs, prerequisites, course_info
     
-    def write__pdf(self):
+    def write_pdf(self):
         pass
 
     def run(self):

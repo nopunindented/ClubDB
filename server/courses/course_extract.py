@@ -182,11 +182,11 @@ class CourseExtract():
                 terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
                 document.add_heading(course, level=1)
                 description_paragraph = document.add_paragraph(style='List Bullet')
-                description_paragraph.add_heading("Course Description:", level=2)
-                description_paragraph.add_paragraph(course_description, style='Normal')
-
-                print(terms_and_profs, prerequisites, course_description)
-
+                run = description_paragraph.add_run("Course Description:" + "\n")
+                run.bold = True
+                
+                # Add the course description to the parent paragraph
+                description_paragraph.add_run('\n' + course_description)
 
         document.save('gfg.docx') 
 

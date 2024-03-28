@@ -162,13 +162,14 @@ class CourseExtract():
                 except:
                     pass
         
-        print(term_and_profs)
-        print(course_description)
-        print(prerequisites)
+        return term_and_profs, prerequisites, course_info
+    
+    def write__pdf(self):
+        pass
 
     def run(self):
         pass
 
 if __name__ == "__main__":
-    extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor
-    extract_object.course_description_extract('math 100')
+    extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
+    extract_object.course_description_extract('ece 321')

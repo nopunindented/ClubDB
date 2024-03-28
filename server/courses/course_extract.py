@@ -211,28 +211,50 @@ class CourseExtract():
                 run_terms.bold = True
 
                 keys = list(terms_and_profs.keys())
-                for i, key in enumerate(keys):
-                    terms_paragraph.add_run(key)
-                    if i < len(keys) - 1:
-                        terms_paragraph.add_run(", ")
-                    else:
-                        terms_paragraph.add_run("\n")
+
+                if len(keys)>0:
+                    for i, key in enumerate(keys):
+                        terms_paragraph.add_run(key)
+                        if i < len(keys) - 1:
+                            terms_paragraph.add_run(", ")
+                        else:
+                            terms_paragraph.add_run("\n")
+                else:
+                    terms_paragraph.add_run("No term decided yet/not offered this year" + "\n")
                 
                 # Adding professors
                 professors_paragraph = document.add_paragraph(style='List Bullet')
                 run_terms = professors_paragraph.add_run("Instructor(s):" + "\n")
                 run_terms.bold = True
 
-                for term, instructor in terms_and_profs.items():
-                    if len(instructor)==1:
-                        professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
-                    elif len(instructor)>1:
-                        for i in range(0, len(instructor)):
-                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
-                            if i==len(instructor) - 1:
-                                professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
-                    else:
-                        professors_paragraph.add_run("Instructor(s) undecided for " + term + ")")
+                counter = 0
+
+                if len(terms_and_profs)>0:
+                    for term, instructor in terms_and_profs.items():
+                        counter += 1
+                        if counter<len(terms_and_profs):
+                            if len(instructor)==1:
+                                professors_paragraph.add_run(instructor[0] + " (teaching in " + term + "), ")
+                            elif len(instructor)>1:
+                                for i in range(0, len(instructor)):
+                                    professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
+                                    if i==len(instructor) - 1:
+                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                            else:
+                                professors_paragraph.add_run("Instructor(s) undecided for " + term + ", ")
+
+                        else:
+                            if len(instructor)==1:
+                                professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
+                            elif len(instructor)>1:
+                                for i in range(0, len(instructor)):
+                                    professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
+                                    if i==len(instructor) - 1:
+                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                            else:
+                                professors_paragraph.add_run("Instructor(s) undecided for " + term + "")
+                else:
+                     professors_paragraph.add_run("No instructor teaching the course")
 
         document.save('courses_softe/Group_2_Software_Complete.docx')
 

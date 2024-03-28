@@ -7,6 +7,7 @@ import undetected_chromedriver as uc
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 import os
+from docx import *
 
 class CourseExtract():
 
@@ -162,14 +163,27 @@ class CourseExtract():
                 except:
                     pass
         
-        return term_and_profs, prerequisites, course_info
+        return term_and_profs, prerequisites, course_description
     
     def write_pdf(self):
-        pass
+        document = Document()
+
+        document.add_heading('Group 2 Electives', 0)
+
+        with open("courses_softe\software_group2_electives.txt", "r") as file:
+            for course in file:
+
+                terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
+                print(terms_and_profs, prerequisites, course_description)
+
+
+        document.save('gfg.docx') 
 
     def run(self):
         pass
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
-    extract_object.course_description_extract('ece 321')
+    # extract_object.course_description_extract('ece 321')
+
+    extract_object.write_pdf()

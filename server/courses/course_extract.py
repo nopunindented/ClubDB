@@ -124,6 +124,8 @@ class CourseExtract():
 
         course_info = (driver.find_element("xpath", "//div[@class='container']/p[2]").text).split('.')
 
+        term_and_instructor_info = (driver.find_elements(By.CLASS_NAME, 'mb-5'))
+
         prerequisites = ""
 
         for i in range(0, len(course_info)):
@@ -131,13 +133,34 @@ class CourseExtract():
                 prerequisites = course_info.pop(i)
                 break
         
-        course_description = '.'.join(course_info)
+        course_description = '.'.join(course_info) # All course info sans prereqs
 
-        print(course_description)
+        
+        term_and_instructor_info = driver.find_elements(By.CLASS_NAME, 'mb-5')
+
+        for element in term_and_instructor_info:
+
+            h2_text = element.find_element(By.TAG_NAME, 'h2').text
+            
+            # Print the extracted information
+            print(h2_text)
+            
+            # Find all td elements inside the current element
+            td_elements = element.find_elements(By.TAG_NAME, 'td')
+            
+            for td_element in td_elements:
+                try:
+                    data_card_title = td_element.get_attribute('data-card-title') # Check if the td element has the data-card-title attribute
+                    if data_card_title == "Instructor(s)":
+                        a_tags = td_element.find_elements(By.TAG_NAME, 'a')
+                        for atag in a_tags:
+                            print(atag.text)
+                except:
+                    pass
     
     def run(self):
         pass
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor
-    extract_object.course_description_extract('CMPUT 250')
+    extract_object.course_description_extract('cmput 366')

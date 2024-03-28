@@ -163,6 +163,8 @@ class CourseExtract():
                     pass
         
         print(term_and_profs)
+        print(course_description)
+        print(prerequisites)
 
     def run(self):
         pass

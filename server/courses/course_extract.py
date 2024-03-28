@@ -18,24 +18,30 @@ class CourseExtract():
         self.software_url = 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339'
         self.compe_normal_url = 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339'
         self.compe_nano_url = 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339'
+        self.driver = ''
     
     def getProxies(self):
-        r = requests.get('https://free-proxy-list.net/')
+        r = requests.get('https://free-proxy-list.net/', verify=False)
         soup = BeautifulSoup(r.content, 'html.parser')
         table = soup.find('tbody')
+        total_rows = len(table)
+        with open("proxies.txt", 'w') as file:
+            for index, row in enumerate(table):
+                if row.find_all('td')[4].text == 'elite proxy' and row.find_all('td')[5].text == 'yes':
+                    proxy = ':'.join([row.find_all('td')[0].text, row.find_all('td')[1].text])
+                    file.write(proxy)
+                    if index < total_rows - 1:
+                        file.write('\n')
+
+    def setupDriver(self):
 
         proxies = []
-        for row in table:
-            if row.find_all('td')[4].text == 'elite proxy' and row.find_all('td')[5].text == 'yes':
-                proxy = ':'.join([row.find_all('td')[0].text, row.find_all('td')[1].text])
-                proxies.append(proxy)
-            else:
-                pass
-
         options = Options()
 
-        for i in range(0, len(proxies)):
-            options.add_argument(f'--proxy-server={proxies[i]}')
+        with open("proxies.txt", 'r') as file:
+            for line in file:
+                proxies.append(line)
+                options.add_argument(f'--proxy-server={line}')
 
         random_proxy = random.choice(proxies)      
 
@@ -43,17 +49,14 @@ class CourseExtract():
             'proxy': {
                 'http': f'{random_proxy}',
                 'https': f'{random_proxy}',
+                'verify_ssl': False
             },
         }
 
         chrome_options = webdriver.ChromeOptions()
-        driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
-
-        return driver
+        self.driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
     
     def extract_group_two(self):
-
-        driver = self.getProxies()
 
         url_to_search = ''
         list_of_non_grp2s = []
@@ -72,9 +75,9 @@ class CourseExtract():
             url_to_search = self.compe_nano_url
             list_of_non_grp2s = list_of_non_grp2_compe_nano
 
-        driver.get(url_to_search)
+        self.driver.get(url_to_search)
 
-        h1 = driver.find_elements(By.CLASS_NAME, 'acalog-course')
+        h1 = self.driver.find_elements(By.CLASS_NAME, 'acalog-course')
         list_of_grp2 = []
 
         for i in range(0, len(h1)):
@@ -90,7 +93,7 @@ class CourseExtract():
             except ValueError:
                 pass
 
-        driver.quit()
+        self.driver.quit()
 
         return list_of_grp2
     
@@ -116,16 +119,14 @@ class CourseExtract():
     
     def course_description_extract(self, course_name):
 
-        driver = self.getProxies()
-
         split_course = course_name.split()
         course_url = 'https://apps.ualberta.ca/catalogue/course/' + split_course[0].lower() + '/' + split_course[1]
 
-        driver.get(course_url)
+        self.driver.get(course_url)
 
-        course_info = (driver.find_element("xpath", "//div[@class='container']/p[2]").text).split('.')
+        course_info = (self.driver.find_element("xpath", "//div[@class='container']/p[2]").text).split('.')
 
-        term_and_instructor_info = (driver.find_elements(By.CLASS_NAME, 'mb-5'))
+        term_and_instructor_info = (self.driver.find_elements(By.CLASS_NAME, 'mb-5'))
 
         prerequisites = ""
 
@@ -137,7 +138,7 @@ class CourseExtract():
         course_description = '.'.join(course_info) # All course info sans prereqs
 
         
-        term_and_instructor_info = driver.find_elements(By.CLASS_NAME, 'mb-5')
+        term_and_instructor_info = self.driver.find_elements(By.CLASS_NAME, 'mb-5')
 
         term_and_profs = {}
 
@@ -147,21 +148,24 @@ class CourseExtract():
 
             table_elements = element.find_element(By.TAG_NAME, 'table')
             
-            td_elements = table_elements.find_elements(By.TAG_NAME, 'td')
-            
-            for td_element in td_elements:
-                try:
-                    data_card_title = td_element.get_attribute('data-card-title') # Check if the td element has the data-card-title attribute
-                    if data_card_title == "Instructor(s)":
+            if table_elements is not None:
+                td_elements = table_elements.find_elements(By.TAG_NAME, 'td')
+                
+                for td_element in td_elements:
+                    try:
+                        data_card_title = td_element.get_attribute('data-card-title') # Check if the td element has the data-card-title attribute
+                        if data_card_title == "Instructor(s)":
 
-                        a_tags = td_element.find_elements(By.TAG_NAME, 'a')
-                        if what_term not in term_and_profs:
-                            term_and_profs[what_term] = []
+                            a_tags = td_element.find_elements(By.TAG_NAME, 'a')
+                            if what_term not in term_and_profs:
+                                term_and_profs[what_term] = []
 
-                        for atag in a_tags:
-                            term_and_profs[what_term].append(atag.text)
-                except:
-                    pass
+                            for atag in a_tags:
+                                term_and_profs[what_term].append(atag.text)
+                    except:
+                        pass
+            else:
+                term_and_profs[what_term] = []
         
         return term_and_profs, prerequisites, course_description
     
@@ -172,18 +176,22 @@ class CourseExtract():
 
         with open("courses_softe\software_group2_electives.txt", "r") as file:
             for course in file:
-
                 terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
+                document.add_heading(course, level=1)
+                document.add_paragraph("Course Description:", style='Normal').bold = True
+                document.add_paragraph(course_description, style='Normal')
+
                 print(terms_and_profs, prerequisites, course_description)
 
 
         document.save('gfg.docx') 
 
     def run(self):
-        pass
+        self.setupDriver()
+        self.write_pdf()
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.write_pdf()
+    extract_object.run()

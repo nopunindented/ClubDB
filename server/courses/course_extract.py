@@ -188,6 +188,8 @@ class CourseExtract():
                 # Add the course description to the parent paragraph
                 description_paragraph.add_run('\n' + course_description + "\n")
 
+                # Adding prereqs
+                print(terms_and_profs)
                 prerequisites_paragraph = document.add_paragraph(style='List Bullet')
                 if "Prerequisites" not in prerequisites:
                     run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
@@ -197,6 +199,20 @@ class CourseExtract():
                     run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                     run_prerequisites.bold = True
                     prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
+                
+                # Adding terms and professor
+                terms_paragraph = document.add_paragraph(style='List Bullet')
+                run_terms = terms_paragraph.add_run("Terms the course is available in:" + "\n")
+                run_terms.bold = True
+
+                keys = list(terms_and_profs.keys())
+                for i, key in enumerate(keys):
+                    terms_paragraph.add_run(key)
+                    if i < len(keys) - 1:
+                        terms_paragraph.add_run(", ")
+                    else:
+                        terms_paragraph.add_run("\n")
+
 
         document.save('courses_softe/Group_2_Software_Complete.docx')
 

@@ -200,7 +200,7 @@ class CourseExtract():
                     run_prerequisites.bold = True
                     prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
                 
-                # Adding terms and professor
+                # Adding terms
                 terms_paragraph = document.add_paragraph(style='List Bullet')
                 run_terms = terms_paragraph.add_run("Terms the course is available in:" + "\n")
                 run_terms.bold = True
@@ -212,7 +212,20 @@ class CourseExtract():
                         terms_paragraph.add_run(", ")
                     else:
                         terms_paragraph.add_run("\n")
+                
+                # Adding professors
+                professors_paragraph = document.add_paragraph(style='List Bullet')
+                run_terms = professors_paragraph.add_run("Instructor(s)" + "\n")
+                run_terms.bold = True
 
+                for term, instructor in terms_and_profs.items():
+                    if len(instructor)==1:
+                        professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
+                    elif len(instructor)>1:
+                        for i in range(0, len(instructor)):
+                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                    else:
+                        professors_paragraph.add_run("Instructor(s) undecided for " + term + ")")
 
         document.save('courses_softe/Group_2_Software_Complete.docx')
 

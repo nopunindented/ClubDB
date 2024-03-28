@@ -188,7 +188,7 @@ class CourseExtract():
                 # Add the course description to the parent paragraph
                 description_paragraph.add_run('\n' + course_description)
 
-        document.save('gfg.docx') 
+        document.save('courses_softe/Group_2_Software_Complete.docx') 
 
     def run(self):
         self.setupDriver()

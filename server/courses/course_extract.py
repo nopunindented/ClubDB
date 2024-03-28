@@ -186,9 +186,21 @@ class CourseExtract():
                 run.bold = True
                 
                 # Add the course description to the parent paragraph
-                description_paragraph.add_run('\n' + course_description)
+                description_paragraph.add_run('\n' + course_description + "\n")
 
-        document.save('courses_softe/Group_2_Software_Complete.docx') 
+                prerequisites_paragraph = document.add_paragraph(style='List Bullet')
+                if "Prerequisites" not in prerequisites:
+                    run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
+                    run_prerequisites.bold = True
+                    prerequisites_paragraph.add_run(prerequisites.replace("Prerequisite: ", "") + "\n")
+                else:
+                    run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
+                    run_prerequisites.bold = True
+                    prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
+
+        document.save('courses_softe/Group_2_Software_Complete.docx')
+
+        self.driver.quit()
 
     def run(self):
         self.setupDriver()

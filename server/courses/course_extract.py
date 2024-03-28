@@ -7,7 +7,6 @@ import undetected_chromedriver as uc
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 import os
-import psycopg2
 
 class CourseExtract():
 

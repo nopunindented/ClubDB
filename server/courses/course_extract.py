@@ -138,29 +138,35 @@ class CourseExtract():
         
         term_and_instructor_info = driver.find_elements(By.CLASS_NAME, 'mb-5')
 
+        term_and_profs = {}
+
         for element in term_and_instructor_info:
 
-            h2_text = element.find_element(By.TAG_NAME, 'h2').text
+            what_term = element.find_element(By.TAG_NAME, 'h2').text
+
+            table_elements = element.find_element(By.TAG_NAME, 'table')
             
-            # Print the extracted information
-            print(h2_text)
-            
-            # Find all td elements inside the current element
-            td_elements = element.find_elements(By.TAG_NAME, 'td')
+            td_elements = table_elements.find_elements(By.TAG_NAME, 'td')
             
             for td_element in td_elements:
                 try:
                     data_card_title = td_element.get_attribute('data-card-title') # Check if the td element has the data-card-title attribute
                     if data_card_title == "Instructor(s)":
+
                         a_tags = td_element.find_elements(By.TAG_NAME, 'a')
+                        if what_term not in term_and_profs:
+                            term_and_profs[what_term] = []
+
                         for atag in a_tags:
-                            print(atag.text)
+                            term_and_profs[what_term].append(atag.text)
                 except:
                     pass
-    
+        
+        print(term_and_profs)
+
     def run(self):
         pass
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano in the constructor
-    extract_object.course_description_extract('cmput 366')
+    extract_object.course_description_extract('math 100')

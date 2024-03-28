@@ -6,6 +6,7 @@ import random
 import undetected_chromedriver as uc
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException
 import os
 from docx import *
 
@@ -145,27 +146,29 @@ class CourseExtract():
         for element in term_and_instructor_info:
 
             what_term = element.find_element(By.TAG_NAME, 'h2').text
-
-            table_elements = element.find_element(By.TAG_NAME, 'table')
             
-            if table_elements is not None:
+            try:
+                table_elements = element.find_element(By.TAG_NAME, 'table')
                 td_elements = table_elements.find_elements(By.TAG_NAME, 'td')
                 
-                for td_element in td_elements:
-                    try:
-                        data_card_title = td_element.get_attribute('data-card-title') # Check if the td element has the data-card-title attribute
-                        if data_card_title == "Instructor(s)":
-
-                            a_tags = td_element.find_elements(By.TAG_NAME, 'a')
-                            if what_term not in term_and_profs:
-                                term_and_profs[what_term] = []
-
-                            for atag in a_tags:
-                                term_and_profs[what_term].append(atag.text)
-                    except:
-                        pass
-            else:
+                # Process the table data
+            except NoSuchElementException:
                 term_and_profs[what_term] = []
+                continue
+            
+            for td_element in td_elements:
+                try:
+                    data_card_title = td_element.get_attribute('data-card-title') # Check if the td element has the data-card-title attribute
+                    if data_card_title == "Instructor(s)":
+
+                        a_tags = td_element.find_elements(By.TAG_NAME, 'a')
+                        if what_term not in term_and_profs:
+                            term_and_profs[what_term] = []
+
+                        for atag in a_tags:
+                            term_and_profs[what_term].append(atag.text)
+                except:
+                    pass
         
         return term_and_profs, prerequisites, course_description
     
@@ -178,8 +181,9 @@ class CourseExtract():
             for course in file:
                 terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
                 document.add_heading(course, level=1)
-                document.add_paragraph("Course Description:", style='Normal').bold = True
-                document.add_paragraph(course_description, style='Normal')
+                description_paragraph = document.add_paragraph(style='List Bullet')
+                description_paragraph.add_heading("Course Description:", level=2)
+                description_paragraph.add_paragraph(course_description, style='Normal')
 
                 print(terms_and_profs, prerequisites, course_description)
 

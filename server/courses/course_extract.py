@@ -16,9 +16,9 @@ class CourseExtract():
 
         self.list_of_courses = []
         self.study_program = study_program
-        self.software_url = 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339'
-        self.compe_normal_url = 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339'
-        self.compe_nano_url = 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339'
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339', 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339', 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
+        #self.compe_normal_url = 
+        #self.compe_nano_url = 
         self.driver = ''
     
     def getProxies(self):
@@ -65,58 +65,64 @@ class CourseExtract():
         list_of_non_grp2_compe_normal = ['CMPUT 274', 'ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'CMPUT 272', 'CMPUT 275', 'ECE 212', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 311', 'ECE 325', 'STAT 235', 'WKEXP 902', 'WKEXP 903', 'CMPUT 291', 'CMPUT 301', 'CMPUT 379', 'ECE 322', 'ECE 315', 'ECE 487', 'ENGG 404', 'WKEXP 904', 'WKEXP 905', 'ECE 420', 'ECE 422', 'ECE 493', 'ENGG 400','ECE 203', 'ECE 302', 'ECE 340', 'ECE 304', 'ECE 342', 'ECE 410', 'ECE 492']
         list_of_non_grp2_compe_nano = ['CMPUT 274', 'ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'CMPUT 272', 'CMPUT 275', 'ECE 203', 'ECE 212', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 302', 'ECE 311', 'ECE 325', 'WKEXP 902', 'WKEXP 903', 'CMPUT 291', 'ECE 304', 'ECE 342', 'ECE 410', 'ENGG 404', 'CMPUT 301', 'ECE 315', 'ECE 403', 'ECE 450', 'ECE 475', 'WKEXP 904', 'WKEXP 905', 'ECE 412', 'ECE 457', 'ECE 492', 'ENGG 400']
         list_of_non_grp2_software = ['CMPUT 274', 'ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'CMPUT 272', 'CMPUT 275', 'ECE 212', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 311', 'ECE 321', 'ECE 325', 'STAT 235', 'WKEXP 902', 'WKEXP 903', 'CMPUT 291', 'CMPUT 301', 'CMPUT 379', 'ECE 322', 'ECE 315', 'ECE 421', 'ECE 487', 'ENGG 404', 'WKEXP 904', 'WKEXP 905', 'ECE 420', 'ECE 422', 'ECE 493', 'ENGG 400']
+        
+        list_of_all_grp2s = []
+        for i in range(0, len(self.engineering_url)):
 
-        if self.study_program == 'compe':
-            url_to_search = self.compe_normal_url
-            list_of_non_grp2s = list_of_non_grp2_compe_normal
-        elif self.study_program == 'software':
-            url_to_search = self.software_url
-            list_of_non_grp2s = list_of_non_grp2_software
-        elif self.study_program == 'nano':
-            url_to_search = self.compe_nano_url
-            list_of_non_grp2s = list_of_non_grp2_compe_nano
+            self.driver.get(self.engineering_url[i])
 
-        self.driver.get(url_to_search)
+            h1 = self.driver.find_elements(By.CLASS_NAME, 'acalog-course')
+            list_of_grp2 = []
 
-        h1 = self.driver.find_elements(By.CLASS_NAME, 'acalog-course')
-        list_of_grp2 = []
+            if i == 0:
+                list_of_non_grp2s = list_of_non_grp2_software
+            elif i == 1:
+                list_of_non_grp2s = list_of_non_grp2_compe_normal
+            elif i == 2:
+                list_of_non_grp2s = list_of_non_grp2_compe_nano
 
-        for i in range(0, len(h1)):
-            split_elective = h1[i].text.split()
-            try:
-                value = int(split_elective[1])
-                if (split_elective[0] + ' ' + split_elective[1]) not in list_of_non_grp2s:
-                    if i<len(h1)-1:
-                        list_of_grp2.append(split_elective[0] + ' ' + split_elective[1] + "\n")
-                    else:
-                        list_of_grp2.append(split_elective[0] + ' ' + split_elective[1])
+            for i in range(0, len(h1)):
+                split_elective = h1[i].text.split()
+                try:
+                    value = int(split_elective[1])
+                    if (split_elective[0] + ' ' + split_elective[1]) not in list_of_non_grp2s:
+                        if i<len(h1)-1:
+                            list_of_grp2.append(split_elective[0] + ' ' + split_elective[1] + "\n")
+                        else:
+                            list_of_grp2.append(split_elective[0] + ' ' + split_elective[1])
 
-            except ValueError:
-                pass
+                except ValueError:
+                    pass
+            
+            list_of_all_grp2s.append(list_of_grp2)
+            list_of_grp2 = []
 
         self.driver.quit()
 
-        return list_of_grp2
+        return list_of_all_grp2s
     
     def create_grp2_text(self):
-        if self.study_program == 'software':
-            file_path = 'courses_softe/software_group2_electives.txt'
 
-            if not os.path.exists(file_path):
-                with open(file_path, 'w') as file:
-                    file.writelines(self.extract_group_two())
-        elif self.study_program == 'compe':
-            file_path = 'courses_compe/compe_group2_electives.txt'
-            
-            if not os.path.exists(file_path):
-                with open(file_path, 'w') as file:
-                    file.writelines(self.extract_group_two())
-        elif self.study_program == 'nano':
-            file_path = 'courses_compe_nano/compe_nano_group2_electives.txt'
-            
-            if not os.path.exists(file_path):
-                with open(file_path, 'w') as file:
-                    file.writelines(self.extract_group_two())
+        list_of_all_grp2s = self.extract_group_two()
+
+        file_path = ''
+
+        for i in range(len(list_of_all_grp2s)):
+            if i == 0:
+                file_path = 'courses_softe/software_group2_electives.txt'
+                if not os.path.exists(file_path):
+                    with open(file_path, 'w') as file:
+                        file.writelines(list_of_all_grp2s[i])
+            elif i == 1:
+                file_path = 'courses_compe/compe_group2_electives.txt'
+                if not os.path.exists(file_path):
+                    with open(file_path, 'w') as file:
+                        file.writelines(list_of_all_grp2s[i])
+            elif i == 2:
+                file_path = 'courses_compe_nano/compe_nano_group2_electives.txt'
+                if not os.path.exists(file_path):
+                    with open(file_path, 'w') as file:
+                        file.writelines(list_of_all_grp2s[i])
     
     def course_description_extract(self, course_name):
 

@@ -9,6 +9,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import os
 from docx import *
+from googlesearch import search
 
 class CourseExtract():
 
@@ -168,6 +169,17 @@ class CourseExtract():
         
         return term_and_profs, prerequisites, course_description
     
+    def extract_prof(self, professor):
+        self.setupDriver()
+        first_and_last_names = professor.split()
+
+        professor_to_find = 'https://www.google.com/search?q=' + first_and_last_names[0] + "+" + first_and_last_names[1] + "+" + "University" + "+" + "of" + "+" + "Alberta" + "+" + "Rate" + "+" + "My" + "+" + "Professor"
+        self.driver.get(professor_to_find)
+
+        featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
+
+        print(featured_snippet)
+
     def write_pdf(self):
 
         for discipline in self.list_of_file_paths:
@@ -265,9 +277,12 @@ class CourseExtract():
         self.setupDriver()
         self.create_grp2_text()
         self.write_pdf()
+    
+    def run_experimental(self):
+        self.extract_prof("Meymanat Farzamirad")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run()
+    extract_object.run_experimental()

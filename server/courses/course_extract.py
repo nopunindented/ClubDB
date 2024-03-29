@@ -17,6 +17,7 @@ class CourseExtract():
         self.list_of_courses = []
         self.study_program = study_program
         self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339', 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339', 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
+        self.list_of_file_paths = ['courses_softe\software_group2_electives.txt', 'courses_compe\compe_group2_electives.txt', 'courses_compe_nano\compe_nano_group2_electives.txt']
         #self.compe_normal_url = 
         #self.compe_nano_url = 
         self.driver = ''
@@ -108,22 +109,11 @@ class CourseExtract():
         file_path = ''
 
         for i in range(len(list_of_all_grp2s)):
-            if i == 0:
-                file_path = 'courses_softe/software_group2_electives.txt'
-                if not os.path.exists(file_path):
-                    with open(file_path, 'w') as file:
-                        file.writelines(list_of_all_grp2s[i])
-            elif i == 1:
-                file_path = 'courses_compe/compe_group2_electives.txt'
-                if not os.path.exists(file_path):
-                    with open(file_path, 'w') as file:
-                        file.writelines(list_of_all_grp2s[i])
-            elif i == 2:
-                file_path = 'courses_compe_nano/compe_nano_group2_electives.txt'
-                if not os.path.exists(file_path):
-                    with open(file_path, 'w') as file:
-                        file.writelines(list_of_all_grp2s[i])
-    
+            file_path = self.list_of_file_paths[i]
+            if not os.path.exists(file_path):
+                with open(file_path, 'w') as file:
+                    file.writelines(list_of_all_grp2s[i])
+
     def course_description_extract(self, course_name):
 
         split_course = course_name.split()
@@ -267,6 +257,8 @@ class CourseExtract():
         self.driver.quit()
 
     def run(self):
+        self.setupDriver()
+        self.create_grp2_text()
         self.setupDriver()
         self.write_pdf()
 

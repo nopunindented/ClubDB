@@ -176,9 +176,14 @@ class CourseExtract():
         professor_to_find = 'https://www.google.com/search?q=' + first_and_last_names[0] + "+" + first_and_last_names[1] + "+" + "University" + "+" + "of" + "+" + "Alberta" + "+" + "Rate" + "+" + "My" + "+" + "Professor"
         self.driver.get(professor_to_find)
 
-        featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
+        professor_url = ""
 
-        print(featured_snippet)
+        try:
+            featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
+            professor_url = featured_snippet
+            print(professor_url)
+        except NoSuchElementException:
+            search(f"{professor} University of Alberta Rate My Professor")
 
     def write_pdf(self):
 

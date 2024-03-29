@@ -169,97 +169,101 @@ class CourseExtract():
         return term_and_profs, prerequisites, course_description
     
     def write_pdf(self):
-        document = Document()
 
-        document.add_heading('Group 2 Electives', 0)
+        for discipline in self.list_of_file_paths:
 
-        with open("courses_softe\software_group2_electives.txt", "r") as file:
-            for course in file:
-                terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
-                document.add_heading(course, level=1)
-                description_paragraph = document.add_paragraph(style='List Bullet')
-                run = description_paragraph.add_run("Course Description:" + "\n")
-                run.bold = True
-                
-                # Add the course description to the parent paragraph
-                description_paragraph.add_run('\n' + course_description + "\n")
+            self.setupDriver()
+            document = Document()
 
-                # Adding prereqs
-                print(terms_and_profs)
-                prerequisites_paragraph = document.add_paragraph(style='List Bullet')
-                if "Prerequisites" not in prerequisites and len(prerequisites.strip()) > 0:
-                    run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
-                    run_prerequisites.bold = True
-                    prerequisites_paragraph.add_run(prerequisites.replace("Prerequisite: ", "") + "\n")
-                elif "Prerequisites" in prerequisites and len(prerequisites.strip()) > 0:
-                    run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
-                    run_prerequisites.bold = True
-                    prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
-                elif len(prerequisites.strip()) == 0:
-                    print(course)
-                    run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
-                    run_prerequisites.bold = True
-                    prerequisites_paragraph.add_run("None" + "\n")
-                
-                # Adding terms
-                terms_paragraph = document.add_paragraph(style='List Bullet')
-                run_terms = terms_paragraph.add_run("Terms the course is available in:" + "\n")
-                run_terms.bold = True
+            document.add_heading('Group 2 Electives', 0)
 
-                keys = list(terms_and_profs.keys())
+            with open(discipline, "r") as file:
+                for course in file:
 
-                if len(keys)>0:
-                    for i, key in enumerate(keys):
-                        terms_paragraph.add_run(key)
-                        if i < len(keys) - 1:
-                            terms_paragraph.add_run(", ")
-                        else:
-                            terms_paragraph.add_run("\n")
-                else:
-                    terms_paragraph.add_run("No term decided yet/not offered this year" + "\n")
-                
-                # Adding professors
-                professors_paragraph = document.add_paragraph(style='List Bullet')
-                run_terms = professors_paragraph.add_run("Instructor(s):" + "\n")
-                run_terms.bold = True
+                    terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
+                    document.add_heading(course, level=1)
+                    description_paragraph = document.add_paragraph(style='List Bullet')
+                    run = description_paragraph.add_run("Course Description:" + "\n")
+                    run.bold = True
+                    
+                    # Add the course description to the parent paragraph
+                    description_paragraph.add_run('\n' + course_description + "\n")
 
-                counter = 0
+                    # Adding prereqs
+                    print(terms_and_profs)
+                    prerequisites_paragraph = document.add_paragraph(style='List Bullet')
+                    if "Prerequisites" not in prerequisites and len(prerequisites.strip()) > 0:
+                        run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
+                        run_prerequisites.bold = True
+                        prerequisites_paragraph.add_run(prerequisites.replace("Prerequisite: ", "") + "\n")
+                    elif "Prerequisites" in prerequisites and len(prerequisites.strip()) > 0:
+                        run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
+                        run_prerequisites.bold = True
+                        prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
+                    elif len(prerequisites.strip()) == 0:
+                        print(course)
+                        run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
+                        run_prerequisites.bold = True
+                        prerequisites_paragraph.add_run("None" + "\n")
+                    
+                    # Adding terms
+                    terms_paragraph = document.add_paragraph(style='List Bullet')
+                    run_terms = terms_paragraph.add_run("Terms the course is available in:" + "\n")
+                    run_terms.bold = True
 
-                if len(terms_and_profs)>0:
-                    for term, instructor in terms_and_profs.items():
-                        counter += 1
-                        if counter<len(terms_and_profs):
-                            if len(instructor)==1:
-                                professors_paragraph.add_run(instructor[0] + " (teaching in " + term + "), ")
-                            elif len(instructor)>1:
-                                for i in range(0, len(instructor)):
-                                    professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
-                                    if i==len(instructor) - 1:
-                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                    keys = list(terms_and_profs.keys())
+
+                    if len(keys)>0:
+                        for i, key in enumerate(keys):
+                            terms_paragraph.add_run(key)
+                            if i < len(keys) - 1:
+                                terms_paragraph.add_run(", ")
                             else:
-                                professors_paragraph.add_run("Instructor(s) undecided for " + term + ", ")
+                                terms_paragraph.add_run("\n")
+                    else:
+                        terms_paragraph.add_run("No term decided yet/not offered this year" + "\n")
+                    
+                    # Adding professors
+                    professors_paragraph = document.add_paragraph(style='List Bullet')
+                    run_terms = professors_paragraph.add_run("Instructor(s):" + "\n")
+                    run_terms.bold = True
 
-                        else:
-                            if len(instructor)==1:
-                                professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
-                            elif len(instructor)>1:
-                                for i in range(0, len(instructor)):
-                                    professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
-                                    if i==len(instructor) - 1:
-                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                    counter = 0
+
+                    if len(terms_and_profs)>0:
+                        for term, instructor in terms_and_profs.items():
+                            counter += 1
+                            if counter<len(terms_and_profs):
+                                if len(instructor)==1:
+                                    professors_paragraph.add_run(instructor[0] + " (teaching in " + term + "), ")
+                                elif len(instructor)>1:
+                                    for i in range(0, len(instructor)):
+                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
+                                        if i==len(instructor) - 1:
+                                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                                else:
+                                    professors_paragraph.add_run("Instructor(s) undecided for " + term + ", ")
+
                             else:
-                                professors_paragraph.add_run("Instructor(s) undecided for " + term + "")
-                else:
-                     professors_paragraph.add_run("No instructor teaching the course")
+                                if len(instructor)==1:
+                                    professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
+                                elif len(instructor)>1:
+                                    for i in range(0, len(instructor)):
+                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
+                                        if i==len(instructor) - 1:
+                                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                                else:
+                                    professors_paragraph.add_run("Instructor(s) undecided for " + term + "")
+                    else:
+                        professors_paragraph.add_run("No instructor teaching the course")
 
-        document.save('courses_softe/Group_2_Software_Complete.docx')
+            document.save(discipline.replace(".txt", ".docx"))
 
-        self.driver.quit()
+            self.driver.quit()
 
     def run(self):
         self.setupDriver()
         self.create_grp2_text()
-        self.setupDriver()
         self.write_pdf()
 
 if __name__ == "__main__":

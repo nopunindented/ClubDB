@@ -187,14 +187,13 @@ class CourseExtract():
             rmp_url = search(f"{professor} University of Alberta Rate My Professor", num_results=1)
             for url in rmp_url:
                 professor_url = url
-        
+                break
         # Need to verify if the url is valid (the proper associated rate my prof rating for the professor in question)
                 
         ratemyprof_rating = ""
         
         if "ratemyprofessors" not in professor_url:
             ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
-            self.driver.quit()
         else:
             self.driver.get(professor_url)
 
@@ -206,7 +205,6 @@ class CourseExtract():
 
             if first_name_rmp.lower()!=first_and_last_names[0].lower() or last_name_rmp.lower()!=first_and_last_names[1].lower():
                 ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
-                self.driver.quit()
             else:
                 prof_rating = self.driver.find_element(By.CLASS_NAME, "RatingValue__Numerator-qw8sqy-2.liyUjw").text
 
@@ -214,21 +212,23 @@ class CourseExtract():
                 ratemyprof_rating = prof_rating + "/5"
 
                 print(ratemyprof_rating)
-                self.driver.quit()
+
+        self.driver.quit()
+            
+        return ratemyprof_rating
 
 
     def write_pdf(self):
 
         for discipline in self.list_of_file_paths:
-
-            self.setupDriver()
             document = Document()
 
             document.add_heading('Group 2 Electives', 0)
 
             with open(discipline, "r") as file:
-                for course in file:
 
+                for course in file:
+                    self.setupDriver()
                     terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
                     document.add_heading(course, level=1)
                     description_paragraph = document.add_paragraph(style='List Bullet')
@@ -285,7 +285,8 @@ class CourseExtract():
                                 if len(instructors) == 1:
                                     professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
                                 elif len(instructors) > 1:
-                                    # Remove duplicates using set and convert back to list
+
+                                    # Convert list to set and then back again
                                     unique_instructors = list(set(instructors))
                                     for i in range(len(unique_instructors)):
                                         if i == len(unique_instructors) - 1:
@@ -312,6 +313,9 @@ class CourseExtract():
                     else:
                         professors_paragraph.add_run("No instructor teaching the course")
                     
+                    professors_paragraph.add_run("\n")
+
+                    
                     # Adding professor rating
                         
                     rating_paragraph = document.add_paragraph(style='List Bullet')
@@ -319,8 +323,32 @@ class CourseExtract():
                     run_terms.bold = True
 
                     list_of_profs = list(terms_and_profs.values())
-                    for instructor in list_of_profs:
-                        print(instructor)
+                    unique_profs = []
+
+                    for sublist in list_of_profs:
+                        unique_sublist = list(set(sublist))
+
+                        if len(unique_sublist) > 0:
+                            unique_profs.extend(unique_sublist)
+                    
+                    if len(unique_profs) == 0:
+                        rating_paragraph.add_run("No professors teaching this term, so no ratings available at all")
+                    else:
+                        for i in range(len(unique_profs)):
+                            professor = unique_profs[i]
+                            rating = self.extract_prof(professor)
+                            if i<len(unique_profs) - 1:
+                                if rating != "The professor does not have a rating on Rate My Professor":
+                                    rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}, ")
+                                else:
+                                    rating_paragraph.add_run(rating)
+                            else:
+                                if rating != "The professor does not have a rating on Rate My Professor":
+                                    rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}")
+                                else:
+                                    rating_paragraph.add_run(rating)
+
+                    self.driver.quit()
                     
 
 
@@ -334,10 +362,10 @@ class CourseExtract():
         self.write_pdf()
     
     def run_experimental(self):
-        self.extract_prof("Meymanat Farzamirad")
+        self.extract_prof("Anup Basu")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run()
+    extract_object.run_experimental()

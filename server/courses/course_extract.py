@@ -250,7 +250,6 @@ class CourseExtract():
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
                     elif len(prerequisites.strip()) == 0:
-                        print(course)
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run("None" + "\n")
@@ -279,32 +278,51 @@ class CourseExtract():
 
                     counter = 0
 
-                    if len(terms_and_profs)>0:
-                        for term, instructor in terms_and_profs.items():
+                    if len(terms_and_profs) > 0:
+                        for term, instructors in terms_and_profs.items():
                             counter += 1
-                            if counter<len(terms_and_profs):
-                                if len(instructor)==1:
-                                    professors_paragraph.add_run(instructor[0] + " (teaching in " + term + "), ")
-                                elif len(instructor)>1:
-                                    for i in range(0, len(instructor)):
-                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
-                                        if i==len(instructor) - 1:
-                                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                            if counter < len(terms_and_profs):
+                                if len(instructors) == 1:
+                                    professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
+                                elif len(instructors) > 1:
+                                    # Remove duplicates using set and convert back to list
+                                    unique_instructors = list(set(instructors))
+                                    for i in range(len(unique_instructors)):
+                                        if i == len(unique_instructors) - 1:
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
+                                            break
+                                        else:
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                 else:
                                     professors_paragraph.add_run("Instructor(s) undecided for " + term + ", ")
-
                             else:
-                                if len(instructor)==1:
-                                    professors_paragraph.add_run(instructor[0] + " (teaching in " + term + ")")
-                                elif len(instructor)>1:
-                                    for i in range(0, len(instructor)):
-                                        professors_paragraph.add_run(instructor[i] + " (teaching in " + term + "), ")
-                                        if i==len(instructor) - 1:
-                                            professors_paragraph.add_run(instructor[i] + " (teaching in " + term + ")")
+                                if len(instructors) == 1:
+                                    professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
+                                elif len(instructors) > 1:
+                                    # Remove duplicates using set and convert back to list
+                                    unique_instructors = list(set(instructors))
+                                    for i in range(len(unique_instructors)):
+                                        if i == len(unique_instructors) - 1:
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + ")")
+                                            break
+                                        else:
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                 else:
                                     professors_paragraph.add_run("Instructor(s) undecided for " + term + "")
                     else:
                         professors_paragraph.add_run("No instructor teaching the course")
+                    
+                    # Adding professor rating
+                        
+                    rating_paragraph = document.add_paragraph(style='List Bullet')
+                    run_terms = rating_paragraph.add_run("Instructor ratings:" + "\n")
+                    run_terms.bold = True
+
+                    list_of_profs = list(terms_and_profs.values())
+                    for instructor in list_of_profs:
+                        print(instructor)
+                    
+
 
             document.save(discipline.replace(".txt", ".docx"))
 
@@ -322,4 +340,4 @@ if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run_experimental()
+    extract_object.run()

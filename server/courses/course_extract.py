@@ -180,12 +180,15 @@ class CourseExtract():
 
         try:
             featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
-            professor_url = featured_snippet.find_element(By.TAG_NAME, 'a')
-            print(professor_url.get_attribute("href"))
+            a_tag_for_prof_url = featured_snippet.find_element(By.TAG_NAME, 'a')
+            professor_url = a_tag_for_prof_url.get_attribute("href")
+            professor_url, _, _ = professor_url.partition('#')  # professor_url after partitioning. _, only takes the portion before partioning
         except NoSuchElementException:
-            rmp_url = search(f"{professor} University of Alberta Rate My Professor")
-            print(rmp_url)
+            rmp_url = search(f"{professor} University of Alberta Rate My Professor", num_results=1)
+            for url in rmp_url:
+                professor_url = url
         
+        self.driver.get(professor_url)
         self.driver.quit()
     def write_pdf(self):
 

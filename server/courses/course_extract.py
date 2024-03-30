@@ -180,11 +180,13 @@ class CourseExtract():
 
         try:
             featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
-            professor_url = featured_snippet
-            print(professor_url)
+            professor_url = featured_snippet.find_element(By.TAG_NAME, 'a')
+            print(professor_url.get_attribute("href"))
         except NoSuchElementException:
-            search(f"{professor} University of Alberta Rate My Professor")
-
+            rmp_url = search(f"{professor} University of Alberta Rate My Professor")
+            print(rmp_url)
+        
+        self.driver.quit()
     def write_pdf(self):
 
         for discipline in self.list_of_file_paths:

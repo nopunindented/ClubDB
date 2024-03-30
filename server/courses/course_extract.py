@@ -173,23 +173,32 @@ class CourseExtract():
         self.setupDriver()
         first_and_last_names = professor.split()
 
-        professor_to_find = 'https://www.google.com/search?q=' + first_and_last_names[0] + "+" + first_and_last_names[1] + "+" + "University" + "+" + "of" + "+" + "Alberta" + "+" + "Rate" + "+" + "My" + "+" + "Professor"
+        professor_to_find = f"https://www.google.com/search?q={'+'.join(first_and_last_names)}+University+of+Alberta+Rate+My+Professor"
         self.driver.get(professor_to_find)
         professor_url = ""
 
         try:
-            featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
-            a_tag_for_prof_url = featured_snippet.find_element(By.TAG_NAME, 'a')
-            professor_url = a_tag_for_prof_url.get_attribute("href")
-            professor_url, _, _ = professor_url.partition('#')  # professor_url after partitioning. _, only takes the portion before partioning
-        except:
-            rmp_url_class = self.driver.find_element(By.CLASS_NAME, "MjjYud")
+            regular_results = self.driver.find_elements(By.XPATH, "//div[@class='g']")
 
-            rmp_url_a_tag = rmp_url_class.find_element(By.TAG_NAME, "a")
+            for result in regular_results:
+                link_element = result.find_element(By.TAG_NAME, 'a')
+                professor_url = link_element.get_attribute("href")
+                professor_url, _, _ = professor_url.partition('#')  # professor_url after partitioning. _, only 
+                break
+        except NoSuchElementException:
+            print("No regular search results found")
 
-            rmp_url= rmp_url_a_tag.get_attribute("href")
+        if not professor_url:
+            try:
+                alt_results = self.driver.find_elements(By.CLASS_NAME, "MjjYud")
 
-            professor_url = rmp_url
+                # Iterate over alternative results to find the link
+                for result in alt_results:
+                    link_element = result.find_element(By.TAG_NAME, 'a')
+                    professor_url = link_element.get_attribute("href")
+                    break  # Stop after getting the first link
+            except NoSuchElementException:
+                print("No alternative search results found")
         # Need to verify if the url is valid (the proper associated rate my prof rating for the professor in question)
                 
         ratemyprof_rating = ""
@@ -364,10 +373,10 @@ class CourseExtract():
         self.write_pdf()
     
     def run_experimental(self):
-        self.extract_prof("Pierre Boulanger")
+        self.extract_prof("Meymanat Farzamirad")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run_experimental()
+    extract_object.run()

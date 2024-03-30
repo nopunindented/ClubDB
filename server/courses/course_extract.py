@@ -174,22 +174,22 @@ class CourseExtract():
         first_and_last_names = professor.split()
 
         professor_to_find = 'https://www.google.com/search?q=' + first_and_last_names[0] + "+" + first_and_last_names[1] + "+" + "University" + "+" + "of" + "+" + "Alberta" + "+" + "Rate" + "+" + "My" + "+" + "Professor"
-
+        self.driver.get(professor_to_find)
         professor_url = ""
 
         try:
-            self.driver.get(professor_to_find)
             featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
             a_tag_for_prof_url = featured_snippet.find_element(By.TAG_NAME, 'a')
             professor_url = a_tag_for_prof_url.get_attribute("href")
             professor_url, _, _ = professor_url.partition('#')  # professor_url after partitioning. _, only takes the portion before partioning
-        except NoSuchElementException:
-            rmp_url = search(f"{professor} University of Alberta Rate My Professor", num_results=10)
-            for url in rmp_url:
-                professor_url = url
-                print(professor_url)
+        except:
+            rmp_url_class = self.driver.find_element(By.CLASS_NAME, "MjjYud")
 
-            print(professor_url)
+            rmp_url_a_tag = rmp_url_class.find_element(By.TAG_NAME, "a")
+
+            rmp_url= rmp_url_a_tag.get_attribute("href")
+
+            professor_url = rmp_url
         # Need to verify if the url is valid (the proper associated rate my prof rating for the professor in question)
                 
         ratemyprof_rating = ""

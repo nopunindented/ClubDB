@@ -188,16 +188,35 @@ class CourseExtract():
             for url in rmp_url:
                 professor_url = url
         
-        self.driver.get(professor_url)
-
-        prof_rating = self.driver.find_element(By.CLASS_NAME, "RatingValue__Numerator-qw8sqy-2.liyUjw").text
-
-        print(prof_rating)
-        ratemyprof_rating = prof_rating + "/5"
-
-        print(ratemyprof_rating)
-        self.driver.quit()
+        # Need to verify if the url is valid (the proper associated rate my prof rating for the professor in question)
+                
+        ratemyprof_rating = ""
         
+        if "ratemyprofessors" not in professor_url:
+            ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
+            self.driver.quit()
+        else:
+            self.driver.get(professor_url)
+
+            first_name_rmp_div = self.driver.find_element(By.CLASS_NAME, "NameTitle__Name-dowf0z-0.cfjPUG")
+            first_name_rmp = first_name_rmp_div.find_element(By.TAG_NAME, "span").text
+            last_name_rmp = self.driver.find_element(By.CLASS_NAME, "NameTitle__LastNameWrapper-dowf0z-2.glXOHH").text
+
+            print(first_name_rmp, last_name_rmp)
+
+            if first_name_rmp.lower()!=first_and_last_names[0].lower() or last_name_rmp.lower()!=first_and_last_names[1].lower():
+                ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
+                self.driver.quit()
+            else:
+                prof_rating = self.driver.find_element(By.CLASS_NAME, "RatingValue__Numerator-qw8sqy-2.liyUjw").text
+
+                print(prof_rating)
+                ratemyprof_rating = prof_rating + "/5"
+
+                print(ratemyprof_rating)
+                self.driver.quit()
+
+
     def write_pdf(self):
 
         for discipline in self.list_of_file_paths:

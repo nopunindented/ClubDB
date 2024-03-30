@@ -189,7 +189,15 @@ class CourseExtract():
                 professor_url = url
         
         self.driver.get(professor_url)
+
+        prof_rating = self.driver.find_element(By.CLASS_NAME, "RatingValue__Numerator-qw8sqy-2.liyUjw").text
+
+        print(prof_rating)
+        ratemyprof_rating = prof_rating + "/5"
+
+        print(ratemyprof_rating)
         self.driver.quit()
+        
     def write_pdf(self):
 
         for discipline in self.list_of_file_paths:

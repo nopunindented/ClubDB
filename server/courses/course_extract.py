@@ -364,7 +364,7 @@ class CourseExtract():
         self.write_pdf()
     
     def run_experimental(self):
-        self.extract_prof("Jia-Huai You")
+        self.extract_prof("Pierre Boulanger")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor

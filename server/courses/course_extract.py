@@ -174,20 +174,22 @@ class CourseExtract():
         first_and_last_names = professor.split()
 
         professor_to_find = 'https://www.google.com/search?q=' + first_and_last_names[0] + "+" + first_and_last_names[1] + "+" + "University" + "+" + "of" + "+" + "Alberta" + "+" + "Rate" + "+" + "My" + "+" + "Professor"
-        self.driver.get(professor_to_find)
 
         professor_url = ""
 
         try:
+            self.driver.get(professor_to_find)
             featured_snippet = self.driver.find_element(By.CLASS_NAME, "ULSxyf")
             a_tag_for_prof_url = featured_snippet.find_element(By.TAG_NAME, 'a')
             professor_url = a_tag_for_prof_url.get_attribute("href")
             professor_url, _, _ = professor_url.partition('#')  # professor_url after partitioning. _, only takes the portion before partioning
         except NoSuchElementException:
-            rmp_url = search(f"{professor} University of Alberta Rate My Professor", num_results=1)
+            rmp_url = search(f"{professor} University of Alberta Rate My Professor", num_results=10)
             for url in rmp_url:
                 professor_url = url
-                break
+                print(professor_url)
+
+            print(professor_url)
         # Need to verify if the url is valid (the proper associated rate my prof rating for the professor in question)
                 
         ratemyprof_rating = ""
@@ -362,7 +364,7 @@ class CourseExtract():
         self.write_pdf()
     
     def run_experimental(self):
-        self.extract_prof("Anup Basu")
+        self.extract_prof("Jia-Huai You")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor

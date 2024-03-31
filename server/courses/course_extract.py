@@ -167,6 +167,7 @@ class CourseExtract():
                 except:
                     pass
         
+        self.driver.quit()
         return term_and_profs, prerequisites, course_description
     
     def extract_prof(self, professor):

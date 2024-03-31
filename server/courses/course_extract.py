@@ -58,7 +58,7 @@ class CourseExtract():
         }
 
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.headless = True
+        chrome_options.headless = False
         self.driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
     
     def extract_group_two(self):

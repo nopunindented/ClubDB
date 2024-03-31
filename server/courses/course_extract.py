@@ -368,7 +368,7 @@ class CourseExtract():
                                     rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}")
                                 else:
                                     rating_paragraph.add_run(rating)
-                    
+                    os.system("taskkill /im chrome.exe /f")
                     self.driver.quit()
                     
 

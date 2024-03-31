@@ -10,6 +10,7 @@ from selenium.common.exceptions import NoSuchElementException
 import os
 from docx import *
 from googlesearch import search
+from fake_useragent import UserAgent
 
 class CourseExtract():
 
@@ -41,6 +42,10 @@ class CourseExtract():
         proxies = []
         options = Options()
 
+        user_agent = UserAgent()
+
+        user_string = user_agent.random
+
         with open("proxies.txt", 'r') as file:
             for line in file:
                 proxies.append(line)
@@ -58,7 +63,9 @@ class CourseExtract():
         }
 
         chrome_options = webdriver.ChromeOptions()
-        chrome_options.headless = False
+        chrome_options.add_argument(f'--user-agent={user_string}')
+        chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+        chrome_options.headless = True
         self.driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
     
     def extract_group_two(self):
@@ -100,8 +107,7 @@ class CourseExtract():
             
             list_of_all_grp2s.append(list_of_grp2)
             list_of_grp2 = []
-        
-        self.driver.close()
+
         self.driver.quit()
 
         return list_of_all_grp2s
@@ -170,7 +176,6 @@ class CourseExtract():
                 except:
                     pass
         
-        self.driver.close()
         self.driver.quit()
         return term_and_profs, prerequisites, course_description
     
@@ -229,7 +234,6 @@ class CourseExtract():
 
                 print(ratemyprof_rating)
 
-        self.driver.close()        
         self.driver.quit()
             
         return ratemyprof_rating
@@ -365,16 +369,15 @@ class CourseExtract():
                                 else:
                                     rating_paragraph.add_run(rating)
                     
-                    self.driver.close()
                     self.driver.quit()
                     
 
 
             document.save(discipline.replace(".txt", ".docx"))
-            self.driver.close()
             self.driver.quit()
 
     def run(self):
+        self.getProxies()
         self.setupDriver()
         self.create_grp2_text()
         self.write_pdf()

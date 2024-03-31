@@ -45,6 +45,7 @@ class CourseExtract():
             for line in file:
                 proxies.append(line)
                 options.add_argument(f'--proxy-server={line}')
+        options.add_argument('--headless')
 
         random_proxy = random.choice(proxies)      
 
@@ -57,6 +58,7 @@ class CourseExtract():
         }
 
         chrome_options = webdriver.ChromeOptions()
+        chrome_options.headless = True
         self.driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
     
     def extract_group_two(self):
@@ -98,7 +100,8 @@ class CourseExtract():
             
             list_of_all_grp2s.append(list_of_grp2)
             list_of_grp2 = []
-
+        
+        self.driver.close()
         self.driver.quit()
 
         return list_of_all_grp2s
@@ -167,6 +170,7 @@ class CourseExtract():
                 except:
                     pass
         
+        self.driver.close()
         self.driver.quit()
         return term_and_profs, prerequisites, course_description
     
@@ -225,6 +229,7 @@ class CourseExtract():
 
                 print(ratemyprof_rating)
 
+        self.driver.close()        
         self.driver.quit()
             
         return ratemyprof_rating
@@ -359,13 +364,14 @@ class CourseExtract():
                                     rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}")
                                 else:
                                     rating_paragraph.add_run(rating)
-
+                    
+                    self.driver.close()
                     self.driver.quit()
                     
 
 
             document.save(discipline.replace(".txt", ".docx"))
-
+            self.driver.close()
             self.driver.quit()
 
     def run(self):

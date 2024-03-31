@@ -18,8 +18,8 @@ class CourseExtract():
 
         self.list_of_courses = []
         self.study_program = study_program
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339', 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339', 'https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
-        self.list_of_file_paths = ['courses_softe\software_group2_electives.txt', 'courses_compe\compe_group2_electives.txt', 'courses_compe_nano\compe_nano_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
+        self.list_of_file_paths = ['courses_compe_nano\compe_nano_group2_electives.txt']
         #self.compe_normal_url = 
         #self.compe_nano_url = 
         self.driver = ''
@@ -217,20 +217,23 @@ class CourseExtract():
             ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
         else:
             self.driver.get(professor_url)
+            try:
+                first_name_rmp_div = self.driver.find_element(By.CLASS_NAME, "NameTitle__Name-dowf0z-0.cfjPUG")
+                first_name_rmp = first_name_rmp_div.find_element(By.TAG_NAME, "span").text
+                last_name_rmp = self.driver.find_element(By.CLASS_NAME, "NameTitle__LastNameWrapper-dowf0z-2.glXOHH").text
 
-            first_name_rmp_div = self.driver.find_element(By.CLASS_NAME, "NameTitle__Name-dowf0z-0.cfjPUG")
-            first_name_rmp = first_name_rmp_div.find_element(By.TAG_NAME, "span").text
-            last_name_rmp = self.driver.find_element(By.CLASS_NAME, "NameTitle__LastNameWrapper-dowf0z-2.glXOHH").text
+                print(first_name_rmp, last_name_rmp)
 
-            print(first_name_rmp, last_name_rmp)
+                if first_name_rmp.lower()!=first_and_last_names[0].lower() or last_name_rmp.lower()!=first_and_last_names[1].lower():
+                    ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
+                else:
+                    prof_rating = self.driver.find_element(By.CLASS_NAME, "RatingValue__Numerator-qw8sqy-2.liyUjw").text
 
-            if first_name_rmp.lower()!=first_and_last_names[0].lower() or last_name_rmp.lower()!=first_and_last_names[1].lower():
+                    print(prof_rating)
+                    ratemyprof_rating = prof_rating + "/5"
+            
+            except NoSuchElementException:
                 ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
-            else:
-                prof_rating = self.driver.find_element(By.CLASS_NAME, "RatingValue__Numerator-qw8sqy-2.liyUjw").text
-
-                print(prof_rating)
-                ratemyprof_rating = prof_rating + "/5"
 
                 print(ratemyprof_rating)
 

@@ -11,7 +11,7 @@ import os
 from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
-from reddits.reddit_extract import RedditExtract
+from reddit_extract import RedditExtract
 
 class CourseExtract():
 
@@ -387,6 +387,7 @@ class CourseExtract():
         self.write_pdf()
     
     def run_experimental(self):
+        self.setupDriver()
         reddit_course = RedditExtract(self.driver)
         reddit_course.get_course_info("ECE 405")
 
@@ -394,4 +395,4 @@ if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run()
+    extract_object.run_experimental()

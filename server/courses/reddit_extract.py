@@ -14,8 +14,8 @@ from fake_useragent import UserAgent
 
 class RedditExtract():
     
-    def __init__(self):
-        self.driver = ''
+    def __init__(self, driver):
+        self.driver = driver
     
     def get_course_info(self, course):
         course_code_first_and_last = course.split()
@@ -28,7 +28,7 @@ class RedditExtract():
             for result in regular_results[:5]:
                 try:
                     link_element = result.find_element(By.XPATH, ".//a[@jsname='UWckNb']")
-                    
+                    print(link_element)
                     href_value = link_element.get_attribute("href")
                     course_urls.append(href_value)
                 except NoSuchElementException:
@@ -36,4 +36,4 @@ class RedditExtract():
         except NoSuchElementException:
             print("No regular search results found")
 
-        return course_urls
+        print(course_urls)

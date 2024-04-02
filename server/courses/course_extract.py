@@ -379,6 +379,7 @@ class CourseExtract():
 
             document.save(discipline.replace(".txt", ".docx"))
             self.driver.quit()
+            
 
     def run(self):
         self.getProxies()
@@ -387,6 +388,7 @@ class CourseExtract():
         self.write_pdf()
     
     def run_experimental(self):
+        self.getProxies()
         self.setupDriver()
         reddit_course = RedditExtract(self.driver)
         reddit_course.get_course_info("ECE 405")

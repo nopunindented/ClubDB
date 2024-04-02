@@ -19,21 +19,24 @@ class RedditExtract():
     
     def get_course_info(self, course):
         course_code_first_and_last = course.split()
+        print(course_code_first_and_last)
         course_to_find = f"https://www.google.com/search?q={'+'.join(course_code_first_and_last)}+uAlberta+Reddit"
         self.driver.get(course_to_find)
         course_urls = []
         try:
-            regular_results = self.driver.find_elements(By.XPATH, "//div[@class='g']")
+            regular_results = self.driver.find_elements(By.CLASS_NAME, "MjjYud")
+            print(regular_results)
 
             for result in regular_results[:5]:
                 try:
-                    link_element = result.find_element(By.XPATH, ".//a[@jsname='UWckNb']")
-                    print(link_element)
+                    link_element = result.find_element(By.TAG_NAME, "a")
+                    
                     href_value = link_element.get_attribute("href")
                     course_urls.append(href_value)
                 except NoSuchElementException:
                     print("No <a> tag with jsname='UWckNb' found in this search result")
         except NoSuchElementException:
             print("No regular search results found")
-
+        
         print(course_urls)
+        return course_urls

@@ -90,6 +90,7 @@ class RedditExtract():
         Each comment should represent someone's thoughts on the course {course} (make sure that the person is talking about the course in question and not a different course).
         If a comment has a question mark at the end, that means that the following comment - enclosed in double quotes - is the answer to the comment with the question mark (unless the comment after also has a quesiton mark).
         Do not ever explicitly talk about the people who made the comments, or mention the comments themselves. You only want to summarize the difficulty.
+        Do not talk about a professor either, as the professor changes constantly. You only want to summarize the difficulty.
         Provide a summary on the difficulty (make sure to explicitly mention how difficult it is) of the course using the context provided.
         Context: {context}
         Only return the helpful answer below and nothing else.
@@ -99,7 +100,7 @@ class RedditExtract():
         repo_id = "mistralai/Mistral-7B-Instruct-v0.2"
 
         llm = HuggingFaceEndpoint(
-              repo_id=repo_id, max_length = 128, temperature=0.1, token=HUGGINGFACEHUB_API_TOKEN
+              repo_id=repo_id, max_length = 100, temperature=0.1, token=HUGGINGFACEHUB_API_TOKEN
         )
 
         prompt = PromptTemplate(template=template, input_variables=['course', 'context'])

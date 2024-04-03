@@ -25,7 +25,6 @@ class RedditExtract():
         course_urls = []
         try:
             regular_results = self.driver.find_elements(By.CLASS_NAME, "MjjYud")
-            print(regular_results)
 
             for result in regular_results[:5]:
                 try:
@@ -45,13 +44,14 @@ class RedditExtract():
         links = self.get_reddit_links(course)
 
         valid_paragraphs = []
+        valid_paragraphs_overall = []
+        overall_descript = ''
 
         for i in range(0, len(links)):
             try:
                 self.driver.get(links[i])
                 paragraphs_divs = self.driver.find_elements(By.ID, "-post-rtjson-content")
                 post_title = self.driver.find_element(By.CSS_SELECTOR, '[id*="post-title"]')
-                print(post_title.text)
 
                 for div in paragraphs_divs:
                     # Extract paragraphs from the div
@@ -59,7 +59,19 @@ class RedditExtract():
                     
                     # Print or process the paragraphs as needed
                     for paragraph in paragraphs:
-                        if (course.lower() in paragraph.text.lower())  or (course.lower() in post_title.text):
+                        if (course.lower() in paragraph.text.lower())  or (course.lower() in post_title.text.lower() and ("vs" not in post_title.text.lower())):
                             valid_paragraphs.append(paragraph.text)
+                        elif course.lower() in post_title.text.lower() and (("vs" in post_title.text.lower())):
+                            if course.lower() in paragraph.text.lower():
+                                valid_paragraphs.append(paragraph.text)
+                    if len(valid_paragraphs)>0:
+                        valid_paragraphs_overall.append(' '.join(valid_paragraphs))
+                        overall_descript = ' '.join(valid_paragraphs_overall)
+                        valid_paragraphs = []
             except NoSuchElementException:
                 print("No comments available!")
+        
+        os.system("taskkill /im chrome.exe /f")
+        self.driver.quit()
+        
+        print(overall_descript)

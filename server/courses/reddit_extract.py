@@ -11,6 +11,10 @@ import os
 from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
+from langchain_community.llms import HuggingFaceEndpoint
+from langchain.chains import LLMChain
+from langchain.prompts import PromptTemplate
+from dotenv import load_dotenv
 
 class RedditExtract():
     
@@ -76,7 +80,11 @@ class RedditExtract():
         print(overall_descript)
         return overall_descript
         
-    def llm_opinion(self):
+    def llm_opinion(self, course):
+        load_dotenv()
+        HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+        reddit_comments = self.check_if_course_valid(course)
+
         template = """ You will have to judge the difficulty of a university course, based off of comments from the social media site Reddit.
         Each separate comment will be enclosed in double quotes (e.g. "Hello") and you will be passed a number of them at once.
         Each comment should represent someone's thoughts on the course {course} (make sure that the person is talking about the course in question and not a different course).
@@ -86,3 +94,16 @@ class RedditExtract():
         Only return the helpful answer below and nothing else.
         Helpful answer:
         """
+
+        repo_id = "mistralai/Mistral-7B-Instruct-v0.2"
+
+        llm = HuggingFaceEndpoint(
+              repo_id=repo_id, max_length = 128, temperature=0.1, token=HUGGINGFACEHUB_API_TOKEN
+        )
+
+        prompt = PromptTemplate(template=template, input_variables=['course', 'context'])
+        llm_chain = LLMChain(prompt=prompt, llm=llm)
+        print(llm_chain.run({
+            "course": course,
+            "context": reddit_comments
+        }))

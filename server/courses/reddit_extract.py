@@ -19,7 +19,6 @@ class RedditExtract():
     
     def get_reddit_links(self, course):
         course_code_first_and_last = course.split()
-        print(course_code_first_and_last)
         course_to_find = f"https://www.google.com/search?q={'+'.join(course_code_first_and_last)}+uAlberta+Reddit"
         self.driver.get(course_to_find)
         course_urls = []
@@ -31,7 +30,8 @@ class RedditExtract():
                     link_element = result.find_element(By.TAG_NAME, "a")
                     
                     href_value = link_element.get_attribute("href")
-                    course_urls.append(href_value)
+                    if "uAlberta" in href_value:
+                        course_urls.append(href_value)
                 except NoSuchElementException:
                     print("No <a> tag with jsname='UWckNb' found in this search result")
         except NoSuchElementException:
@@ -60,10 +60,10 @@ class RedditExtract():
                     # Print or process the paragraphs as needed
                     for paragraph in paragraphs:
                         if (course.lower() in paragraph.text.lower())  or (course.lower() in post_title.text.lower() and ("vs" not in post_title.text.lower())):
-                            valid_paragraphs.append(paragraph.text)
+                            valid_paragraphs.append('"' + paragraph.text + '"')
                         elif course.lower() in post_title.text.lower() and (("vs" in post_title.text.lower())):
                             if course.lower() in paragraph.text.lower():
-                                valid_paragraphs.append(paragraph.text)
+                                valid_paragraphs.append('"' + paragraph.text + '"')
                     if len(valid_paragraphs)>0:
                         valid_paragraphs_overall.append(' '.join(valid_paragraphs))
                         overall_descript = ' '.join(valid_paragraphs_overall)
@@ -73,5 +73,7 @@ class RedditExtract():
         
         os.system("taskkill /im chrome.exe /f")
         self.driver.quit()
-        
         print(overall_descript)
+        
+    def llm_opinion(self):
+        pass

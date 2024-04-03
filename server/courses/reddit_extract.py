@@ -17,7 +17,7 @@ class RedditExtract():
     def __init__(self, driver):
         self.driver = driver
     
-    def get_course_info(self, course):
+    def get_reddit_links(self, course):
         course_code_first_and_last = course.split()
         print(course_code_first_and_last)
         course_to_find = f"https://www.google.com/search?q={'+'.join(course_code_first_and_last)}+uAlberta+Reddit"
@@ -40,3 +40,26 @@ class RedditExtract():
         
         print(course_urls)
         return course_urls
+    
+    def check_if_course_valid(self, course):
+        links = self.get_reddit_links(course)
+
+        valid_paragraphs = []
+
+        for i in range(0, len(links)):
+            try:
+                self.driver.get(links[i])
+                paragraphs_divs = self.driver.find_elements(By.ID, "-post-rtjson-content")
+                post_title = self.driver.find_element(By.CSS_SELECTOR, '[id*="post-title"]')
+                print(post_title.text)
+
+                for div in paragraphs_divs:
+                    # Extract paragraphs from the div
+                    paragraphs = div.find_elements(By.TAG_NAME, "p")
+                    
+                    # Print or process the paragraphs as needed
+                    for paragraph in paragraphs:
+                        if (course.lower() in paragraph.text.lower())  or (course.lower() in post_title.text):
+                            valid_paragraphs.append(paragraph.text)
+            except NoSuchElementException:
+                print("No comments available!")

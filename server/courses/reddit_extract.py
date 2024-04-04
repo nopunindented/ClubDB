@@ -29,7 +29,7 @@ class RedditExtract():
         try:
             regular_results = self.driver.find_elements(By.CLASS_NAME, "MjjYud")
 
-            for result in regular_results[:5]:
+            for result in regular_results[:10]:
                 try:
                     link_element = result.find_element(By.TAG_NAME, "a")
                     
@@ -57,25 +57,34 @@ class RedditExtract():
                 paragraphs_divs = self.driver.find_elements(By.ID, "-post-rtjson-content")
                 post_title = self.driver.find_element(By.CSS_SELECTOR, '[id*="post-title"]')
 
+                print(post_title.text.lower())
+
                 for div in paragraphs_divs:
                     # Extract paragraphs from the div
                     paragraphs = div.find_elements(By.TAG_NAME, "p")
                     
                     # Print or process the paragraphs as needed
-                    for paragraph in paragraphs:
-                        if (course.lower() in paragraph.text.lower())  or (course.lower() in post_title.text.lower() and ("vs" not in post_title.text.lower())):
-                            valid_paragraphs.append('"' + paragraph.text + '"')
-                        elif course.lower() in post_title.text.lower() and (("vs" in post_title.text.lower())):
-                            if course.lower() in paragraph.text.lower():
+                    print(course.lower())
+                    if course.lower() in post_title.text.lower():
+                        print("hello")
+                        for paragraph in paragraphs:
+                            if(("vs" in post_title.text.lower())):
+                                if course.lower() in paragraph.text.lower():
+                                    valid_paragraphs.append('"' + paragraph.text + '"')
+
+                            elif course.lower() in paragraph.text.lower():
+                                print(f"Course found in paragraph or post title: '{course}'")
                                 valid_paragraphs.append('"' + paragraph.text + '"')
+                                print(paragraph.text)
+                    else:
+                        overall_descript = ''
                     if len(valid_paragraphs)>0:
                         valid_paragraphs_overall.append(' '.join(valid_paragraphs))
                         overall_descript = ' '.join(valid_paragraphs_overall)
                         valid_paragraphs = []
             except NoSuchElementException:
                 print("No comments available!")
-        
-        os.system("taskkill /im chrome.exe /f")
+
         self.driver.quit()
         print(overall_descript)
         return overall_descript
@@ -117,3 +126,5 @@ class RedditExtract():
             })
         
         print(course_difficulty)
+
+        return course_difficulty

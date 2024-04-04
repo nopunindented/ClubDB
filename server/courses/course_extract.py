@@ -372,6 +372,20 @@ class CourseExtract():
                                     rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}")
                                 else:
                                     rating_paragraph.add_run(rating)
+                    
+                    os.system("taskkill /im chrome.exe /f")
+                    self.setupDriver()
+
+                    course_rating_object = RedditExtract(self.driver)
+                
+                    course_rating = course_rating_object.llm_opinion(course)
+
+                    course_difficulty_paragraph = document.add_paragraph(style='List Bullet')
+                    course_difficulty_run = course_difficulty_paragraph.add_run("Course Difficulty:" + "\n")
+                    course_difficulty_run.bold = True
+
+                    course_difficulty_paragraph.add_run(course_rating)
+
                     os.system("taskkill /im chrome.exe /f")
                     self.driver.quit()
                     
@@ -391,10 +405,10 @@ class CourseExtract():
         self.getProxies()
         self.setupDriver()
         reddit_course = RedditExtract(self.driver)
-        reddit_course.llm_opinion("CMPUT 379")
+        reddit_course.llm_opinion("CMPUT 250")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run_experimental()
+    extract_object.run()

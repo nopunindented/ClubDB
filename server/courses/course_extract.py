@@ -19,8 +19,8 @@ class CourseExtract():
 
         self.list_of_courses = []
         self.study_program = study_program
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339','https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339','https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
-        self.list_of_file_paths = ['courses_softe\software_group2_electives.txt','courses_compe\compe_group2_electives.txt','courses_compe_nano\compe_nano_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339','https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
+        self.list_of_file_paths = ['courses_compe\compe_group2_electives.txt','courses_compe_nano\compe_nano_group2_electives.txt']
         #self.compe_normal_url = 
         #self.compe_nano_url = 
         self.driver = ''
@@ -257,7 +257,7 @@ class CourseExtract():
                     terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
                     document.add_heading(course, level=1)
                     description_paragraph = document.add_paragraph(style='List Bullet')
-                    run = description_paragraph.add_run("Course Description:" + "\n")
+                    run = description_paragraph.add_run("Course Description:")
                     run.bold = True
                     
                     # Add the course description to the parent paragraph
@@ -406,7 +406,7 @@ class CourseExtract():
         self.getProxies()
         self.setupDriver()
         reddit_course = RedditExtract(self.driver)
-        reddit_course.llm_opinion("CMPUT 250")
+        reddit_course.llm_opinion("CMPUT 379")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor

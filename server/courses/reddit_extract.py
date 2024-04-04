@@ -91,7 +91,7 @@ class RedditExtract():
         HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
         reddit_comments = self.check_if_course_valid(course)
 
-        template = """ You will have to judge the difficulty of a university course, based off of comments from the social media site Reddit.
+        template = """You will have to judge the difficulty of a university course, based off of comments from the social media site Reddit.
         Each separate comment will be enclosed in double quotes (e.g. "Hello") and you will be passed a number of them at once.
         Each comment should represent someone's thoughts on the course {course} (make sure that the person is talking about the course in question and not a different course).
         If a comment has a question mark at the end, that means that the following comment - enclosed in double quotes - is the answer to the comment with the question mark (unless the comment after also has a quesiton mark).

@@ -57,31 +57,28 @@ class RedditExtract():
                 paragraphs_divs = self.driver.find_elements(By.ID, "-post-rtjson-content")
                 post_title = self.driver.find_element(By.CSS_SELECTOR, '[id*="post-title"]')
 
-                print(post_title.text.lower())
-
                 for div in paragraphs_divs:
                     # Extract paragraphs from the div
                     paragraphs = div.find_elements(By.TAG_NAME, "p")
                     
                     # Print or process the paragraphs as needed
-                    print(course.lower())
-                    if course.lower() in post_title.text.lower():
-                        print("hello")
-                        for paragraph in paragraphs:
-                            if(("vs" in post_title.text.lower())):
-                                if course.lower() in paragraph.text.lower():
-                                    valid_paragraphs.append('"' + paragraph.text + '"')
-
-                            elif course.lower() in paragraph.text.lower():
-                                print(f"Course found in paragraph or post title: '{course}'")
+                    for paragraph in paragraphs:
+                        if "vs" in post_title.text.lower() and course.lower() in post_title.text.lower():
+                            if course.lower() in paragraph.text.lower():
                                 valid_paragraphs.append('"' + paragraph.text + '"')
-                                print(paragraph.text)
-                    else:
+
+                        elif course.lower().strip() in post_title.text.lower().strip():
+                            print(f"Course found in paragraph or post title: '{course}'")
+                            valid_paragraphs.append('"' + paragraph.text + '"')
+                            print(paragraph.text)
+                    
+                    print(valid_paragraphs)
+                    valid_paragraphs_overall.append(' '.join(valid_paragraphs))
+                    if len(valid_paragraphs_overall)==0:
                         overall_descript = ''
-                    if len(valid_paragraphs)>0:
-                        valid_paragraphs_overall.append(' '.join(valid_paragraphs))
+                    else:
                         overall_descript = ' '.join(valid_paragraphs_overall)
-                        valid_paragraphs = []
+                    valid_paragraphs = []
             except NoSuchElementException:
                 print("No comments available!")
 

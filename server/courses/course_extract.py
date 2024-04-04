@@ -374,11 +374,12 @@ class CourseExtract():
                                     rating_paragraph.add_run(rating)
                     
                     os.system("taskkill /im chrome.exe /f")
+
                     self.setupDriver()
 
                     course_rating_object = RedditExtract(self.driver)
                 
-                    course_rating = course_rating_object.llm_opinion(course)
+                    course_rating = course_rating_object.llm_opinion(course.strip())
 
                     course_difficulty_paragraph = document.add_paragraph(style='List Bullet')
                     course_difficulty_run = course_difficulty_paragraph.add_run("Course Difficulty:" + "\n")

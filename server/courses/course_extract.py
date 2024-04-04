@@ -391,7 +391,7 @@ class CourseExtract():
         self.getProxies()
         self.setupDriver()
         reddit_course = RedditExtract(self.driver)
-        reddit_course.llm_opinion("CMPUT 379")
+        reddit_course.llm_opinion("ECE 311")
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor

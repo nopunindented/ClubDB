@@ -105,7 +105,15 @@ class RedditExtract():
 
         prompt = PromptTemplate(template=template, input_variables=['course', 'context'])
         llm_chain = LLMChain(prompt=prompt, llm=llm)
-        print(llm_chain.run({
-            "course": course,
-            "context": reddit_comments
-        }))
+
+        course_difficulty = ''
+        if reddit_comments.strip()=='' or reddit_comments.strip()=="":
+            course_difficulty = "Insufficient information available on course difficulty"
+        else:
+            print(reddit_comments)
+            course_difficulty = llm_chain.run({
+                "course": course,
+                "context": reddit_comments
+            })
+        
+        print(course_difficulty)

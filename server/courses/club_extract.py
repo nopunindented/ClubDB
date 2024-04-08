@@ -64,8 +64,25 @@ class ClubExtract():
     def extract_clubs(self):
         self.driver.get("https://alberta.campuslabs.ca/engage/organizations?categories=512")
         org_results = self.driver.find_element(By.ID, "org-search-results")
-        outlined_button = self.driver.find_element(By.CLASS_NAME, "outlinedButton")
+
+
         for i in range(0, 8):
+            outlined_button = self.driver.find_element(By.CLASS_NAME, "outlinedButton")
             outlined_button.click()
         
-        div_of_student_organizations = self
+        orgs_a_tags = org_results.find_elements(By.TAG_NAME, 'a')
+
+        list_of_org_urls = [a_tag.get_attribute("href") for a_tag in orgs_a_tags]
+        
+        print(list_of_org_urls)
+
+    def run(self):
+        self.getProxies()
+        self.setupDriver()
+        self.extract_clubs()
+
+if __name__ == "__main__":
+    extract_object = ClubExtract() # can put compe, software, or nano i    n the constructor
+    # extract_object.course_description_extract('ece 321')
+
+    extract_object.run()

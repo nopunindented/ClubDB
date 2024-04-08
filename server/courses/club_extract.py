@@ -86,11 +86,13 @@ class ClubExtract():
             self.driver.get(url)
 
             paragraph = ''
+            club_name = ''
             try:
+                club_name = self.driver.find_element(By.TAG_NAME, "h1").text
                 paragraph = self.driver.find_element(By.TAG_NAME, "p").text
-                club_name = self.driver.find_element(By.CLASS_NAME, "h1").text
             except NoSuchElementException:
                 paragraph = "No club information available"
+
             document.add_heading(club_name, level=1)
             description_paragraph = document.add_paragraph(style='List Bullet')
             run = description_paragraph.add_run("Club Description:")

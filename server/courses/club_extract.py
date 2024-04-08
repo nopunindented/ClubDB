@@ -9,13 +9,14 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
 import os
 from docx import *
-from googlesearch import search
 from fake_useragent import UserAgent
-from reddit_extract import RedditExtract
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 class ClubExtract():
     def __init__(self):
         self.driver = ''
+        self.list_of_urls = []
     
     def getProxies(self):
         r = requests.get('https://free-proxy-list.net/', verify=False)
@@ -62,24 +63,50 @@ class ClubExtract():
         self.driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
     
     def extract_clubs(self):
-        self.driver.get("https://alberta.campuslabs.ca/engage/organizations?categories=512")
+        self.driver.get("https://alberta.campuslabs.ca/engage/organizations")
         org_results = self.driver.find_element(By.ID, "org-search-results")
 
-
-        for i in range(0, 8):
-            outlined_button = self.driver.find_element(By.CLASS_NAME, "outlinedButton")
+        for i in range(0, 48):
+            outlined_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.driver.find_element(By.CLASS_NAME, "outlinedButton")))
             outlined_button.click()
         
         orgs_a_tags = org_results.find_elements(By.TAG_NAME, 'a')
 
-        list_of_org_urls = [a_tag.get_attribute("href") for a_tag in orgs_a_tags]
+        self.list_of_urls = [a_tag.get_attribute("href") for a_tag in orgs_a_tags]
         
-        print(list_of_org_urls)
+        print(self.list_of_urls)
+    
+    def write_pdf(self):
+        document = Document()
+
+        document.add_heading('University of Alberta Clubs', 0)
+
+        for url in self.list_of_urls:
+            self.setupDriver()
+            self.driver.get(url)
+
+            paragraph = ''
+            try:
+                paragraph = self.driver.find_element(By.TAG_NAME, "p").text
+                club_name = self.driver.find_element(By.CLASS_NAME, "h1").text
+            except NoSuchElementException:
+                paragraph = "No club information available"
+            document.add_heading(club_name, level=1)
+            description_paragraph = document.add_paragraph(style='List Bullet')
+            run = description_paragraph.add_run("Club Description:")
+            run.bold = True
+
+            description_paragraph.add_run('\n' + paragraph + "\n")
+            os.system("taskkill /im chrome.exe /f")
+
+        document.save("list_of_clubs.docx")
+        self.driver.quit()
 
     def run(self):
         self.getProxies()
         self.setupDriver()
         self.extract_clubs()
+        self.write_pdf()
 
 if __name__ == "__main__":
     extract_object = ClubExtract() # can put compe, software, or nano i    n the constructor

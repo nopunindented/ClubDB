@@ -85,20 +85,31 @@ class ClubExtract():
             self.setupDriver()
             self.driver.get(url)
 
-            paragraph = ''
+            paragraph_div = ''
             club_name = ''
             try:
                 club_name = self.driver.find_element(By.TAG_NAME, "h1").text
-                paragraph = self.driver.find_element(By.TAG_NAME, "p").text
+                paragraph_div = self.driver.find_element(By.CLASS_NAME, "bodyText-large.userSupplied")
+
             except NoSuchElementException:
                 paragraph = "No club information available"
-
+            
             document.add_heading(club_name, level=1)
             description_paragraph = document.add_paragraph(style='List Bullet')
             run = description_paragraph.add_run("Club Description:")
             run.bold = True
 
-            description_paragraph.add_run('\n' + paragraph + "\n")
+            all_pars = paragraph_div.find_elements(By.TAG_NAME, "p")
+
+            if all_pars:
+                for i in range(0, len(all_pars)):
+                    if i == 0:
+                        description_paragraph.add_run('\n' + all_pars[i].text + "\n")
+                    else:
+                        description_paragraph.add_run(all_pars[i].text + "\n")
+            else:
+                description_paragraph.add_run('\n' + "No description found" + '\n')
+
             os.system("taskkill /im chrome.exe /f")
 
         document.save("list_of_clubs.docx")

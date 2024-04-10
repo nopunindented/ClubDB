@@ -19,6 +19,7 @@ class CourseExtract():
 
         self.list_of_courses = []
         self.study_program = study_program
+        engineering_urls = {'Software': "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339", 'Compe Normal': "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339", "Compe Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339", "EE Biomedical": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47927&returnto=12339", "EE Normal": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47938&returnto=12339", "EE Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47940&returnto=12339", "Enphys Normal": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47960&returnto=12339", "Enphys Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47963&returnto=12339"}
         self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
         self.list_of_file_paths = ['courses_compe_nano\compe_nano_group2_electives.txt']
         #self.compe_normal_url = 

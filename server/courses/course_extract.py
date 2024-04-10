@@ -20,8 +20,8 @@ class CourseExtract():
         self.list_of_courses = []
         self.study_program = study_program
         engineering_urls = {'Software': "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339", 'Compe Normal': "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339", "Compe Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339", "EE Biomedical": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47927&returnto=12339", "EE Normal": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47938&returnto=12339", "EE Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47940&returnto=12339", "Enphys Normal": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47960&returnto=12339", "Enphys Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47963&returnto=12339"}
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339']
-        self.list_of_file_paths = ['courses_compe_nano\compe_nano_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670']
+        self.list_of_file_paths = ['courses_ee_bio\ee_bio_group2_electives.txt']
         #self.compe_normal_url = 
         #self.compe_nano_url = 
         self.driver = ''
@@ -78,6 +78,11 @@ class CourseExtract():
         list_of_non_grp2_compe_normal = ['CMPUT 274', 'ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'CMPUT 272', 'CMPUT 275', 'ECE 212', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 311', 'ECE 325', 'STAT 235', 'WKEXP 902', 'WKEXP 903', 'CMPUT 291', 'CMPUT 301', 'CMPUT 379', 'ECE 322', 'ECE 315', 'ECE 487', 'ENGG 404', 'WKEXP 904', 'WKEXP 905', 'ECE 420', 'ECE 422', 'ECE 493', 'ENGG 400','ECE 203', 'ECE 302', 'ECE 340', 'ECE 304', 'ECE 342', 'ECE 410', 'ECE 492']
         list_of_non_grp2_compe_nano = ['CMPUT 274', 'ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'CMPUT 272', 'CMPUT 275', 'ECE 203', 'ECE 212', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 302', 'ECE 311', 'ECE 325', 'WKEXP 902', 'WKEXP 903', 'CMPUT 291', 'ECE 304', 'ECE 342', 'ECE 410', 'ENGG 404', 'CMPUT 301', 'ECE 315', 'ECE 403', 'ECE 450', 'ECE 475', 'WKEXP 904', 'WKEXP 905', 'ECE 412', 'ECE 457', 'ECE 492', 'ENGG 400']
         list_of_non_grp2_software = ['CMPUT 274', 'ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'CMPUT 272', 'CMPUT 275', 'ECE 212', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 311', 'ECE 321', 'ECE 325', 'STAT 235', 'WKEXP 902', 'WKEXP 903', 'CMPUT 291', 'CMPUT 301', 'CMPUT 379', 'ECE 322', 'ECE 315', 'ECE 421', 'ECE 487', 'ENGG 404', 'WKEXP 904', 'WKEXP 905', 'ECE 420', 'ECE 422', 'ECE 493', 'ENGG 400']
+        list_of_non_grp2_ee_bio = ['ECE 202', 'ECE 210', 'MATH 201', 'MATH 209', 'ECE 203', 'ECE 212', 'ECE 220', 'ECE 240', 'PHYS 230', 'BIOL 107', 'ECE 302', 'ECE 312', 'ECE 340', 'ECE 370', 'MATH 309', 'ECE 303', 'ECE 342', 'ECE 360', 'ECE 380', 'ENGG 404', 'ECE 405', 'ECE 440', 'ECE 490', 'PHYSL 210', 'ECE 491', 'ENGG 400', 'PHYSL 210']
+        list_of_non_grp2_ee_normal = ['ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'ECE 203', 'ECE 212', 'ECE 220', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 302', 'ECE 312', 'ECE 330', 'ECE 340', 'ECE 370', 'MATH 309', 'WKEXP 902', 'WKEXP 903', 'ECE 303', 'ECE 332', 'ECE 342', 'ECE 360', 'ECE 380', 'WKEXP 904', 'WKEXP 905', 'ECE 490', 'ENGG 404', 'ECE 491', 'ENGG 400']
+        list_of_non_grp2_ee_nano = ['ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'ECE 203', 'ECE 212', 'ECE 220', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 302', 'ECE 312', 'ECE 340', 'ECE 370', 'ECE 471', 'MATH 309', 'WKEXP 902', 'WKEXP 903', 'WKEXP 904', 'ECE 303', 'ECE 341', 'ECE 342', 'ECE 456', 'WKEXP 905', 'ECE 360', 'ECE 457', 'ECE 490', 'ENGG 404', 'ECE 450', 'ECE 475', 'ECE 491', 'ENGG 400']
+        list_of_non_grp2_enphys_normal = ['ECE 202', 'ECE 210', 'ENGG 299', 'MATH 201', 'MATH 209', 'ECE 203', 'ECE 212', 'ECE 220', 'ECE 240', 'PHYS 230', 'WKEXP 901', 'ECE 302', 'ECE 312', 'ECE 340', 'ECE 370', 'ECE 471', 'MATH 309', 'WKEXP 902', 'WKEXP 903', 'WKEXP 904', 'ECE 303', 'ECE 341', 'ECE 342', 'ECE 456', 'WKEXP 905', 'ECE 360', 'ECE 457', 'ECE 490', 'ENGG 404', 'ECE 450', 'ECE 475', 'ECE 491', 'ENGG 400']
+        list_of_non_grp2_enphys_nano = ['ECE 202', 'ENGG 299', 'MATH 201', 'MATH 209', 'PHYS 281', 'PHYS 292', 'ECE 203', 'ECE 240', 'PHYS 244', 'PHYS 271', 'PHYS 292', 'WKEXP 901', 'ECE 210', 'ECE 302', 'ECE 457', 'ECE 471', 'MATH 311', 'PHYS 381', 'WKEXP 902', 'WKEXP 903', 'WKEXP 904', 'ECE 303', 'ECE 341', 'ECE 360', 'ECE 456', 'PHYS 311', 'PHYS 372', 'WKEXP 905', 'CHEM 261', 'ECE 494', 'ENGG 404', 'PHYS 415', 'PHYS 481', 'BIOCH 200', 'ECE 455', 'ECE 495', 'ENGG 400']
         
         list_of_all_grp2s = []
         for i in range(0, len(self.engineering_url)):
@@ -87,13 +92,25 @@ class CourseExtract():
             h1 = self.driver.find_elements(By.CLASS_NAME, 'acalog-course')
             list_of_grp2 = []
 
-            if i == 0:
+            if self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55199&returnto=13670":
                 list_of_non_grp2s = list_of_non_grp2_software
-            elif i == 1:
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55192&returnto=13670":
                 list_of_non_grp2s = list_of_non_grp2_compe_normal
-            elif i == 2:
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55194&returnto=13670":
                 list_of_non_grp2s = list_of_non_grp2_compe_nano
-
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55167&returnto=13670":
+                list_of_non_grp2s = list_of_non_grp2_ee_bio
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55178&returnto=13670":
+                list_of_non_grp2s = list_of_non_grp2_ee_normal
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55180&returnto=13670":
+                list_of_non_grp2s = list_of_non_grp2_ee_nano
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55200&returnto=13670":
+                list_of_non_grp2s = list_of_non_grp2_enphys_normal
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55180&returnto=13670":
+                list_of_non_grp2s = list_of_non_grp2_enphys_nano
+            
+            
+            
             for i in range(0, len(h1)):
                 split_elective = h1[i].text.split()
                 try:
@@ -108,10 +125,10 @@ class CourseExtract():
                     pass
             
             list_of_all_grp2s.append(list_of_grp2)
-            list_of_grp2 = []
 
         self.driver.quit()
-
+        
+        print(list_of_all_grp2s)
         return list_of_all_grp2s
     
     def create_grp2_text(self):
@@ -407,11 +424,10 @@ class CourseExtract():
     def run_experimental(self):
         self.getProxies()
         self.setupDriver()
-        reddit_course = RedditExtract(self.driver)
-        reddit_course.llm_opinion("CMPUT 379")
+        self.extract_group_two()
 
 if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run()
+    extract_object.run_experimental()

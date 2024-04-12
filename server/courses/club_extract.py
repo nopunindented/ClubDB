@@ -17,6 +17,7 @@ class ClubExtract():
     def __init__(self):
         self.driver = ''
         self.list_of_urls = []
+        self.project_club_url = "https://www.ualberta.ca/engineering/student-life/clubs-projects-competitions.html"
     
     def getProxies(self):
         r = requests.get('https://free-proxy-list.net/', verify=False)
@@ -109,8 +110,18 @@ class ClubExtract():
                         description_paragraph.add_run(all_pars[i].text + "\n")
             else:
                 description_paragraph.add_run('\n' + "No description found" + '\n')
+        
+        
 
             os.system("taskkill /im chrome.exe /f")
+
+            # Engineering project club extraction
+            self.driver.get(self.project_club_url)
+
+            group_container = self.driver.find_element(By.ID, "accordionList112")
+
+            
+
 
         document.save("list_of_clubs.docx")
         self.driver.quit()

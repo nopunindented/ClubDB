@@ -432,4 +432,4 @@ if __name__ == "__main__":
     extract_object = CourseExtract('compe') # can put compe, software, or nano i    n the constructor
     # extract_object.course_description_extract('ece 321')
 
-    extract_object.run_experimental()
+    extract_object.run()

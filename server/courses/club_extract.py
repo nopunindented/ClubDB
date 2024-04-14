@@ -117,12 +117,6 @@ class ClubExtract():
 
             # Engineering project club extraction
         
-    def get_project(self):
-
-        document = Document()
-
-        document.add_heading('University of Alberta Clubs', 0)
-
         self.setupDriver()
         self.driver.get(self.project_club_url)
 
@@ -131,8 +125,6 @@ class ClubExtract():
         all_project_clubs = group_container.find_elements(By.CLASS_NAME, "card")
 
         for i in range(0, len(all_project_clubs)):
-
-            project_club_div = all_project_clubs[i]
 
             html_content = all_project_clubs[i].get_attribute("outerHTML")
 
@@ -156,15 +148,12 @@ class ClubExtract():
 
             if project_club_paragraphs:
                 for i in range(0, len(project_club_paragraphs)):
-                    if project_club_paragraphs[i].text.strip() == "Website: ":
-                        pass
+                    if i == 0:
+                        description_paragraph.add_run("\n" + project_club_paragraphs[i].text + "\n")
+                        print(description_paragraph)
                     else:
-                        if i == 0:
-                            description_paragraph.add_run("\n" + project_club_paragraphs[i].text + "\n")
-                            print(description_paragraph)
-                        else:
-                            description_paragraph.add_run(project_club_paragraphs[i].text + "\n")
-                            print(description_paragraph)
+                        description_paragraph.add_run(project_club_paragraphs[i].text + "\n")
+                        print(description_paragraph)
             else:
                 description_paragraph.add_run('\n' + "No description found" + '\n')
             
@@ -176,7 +165,8 @@ class ClubExtract():
     def run(self):
         self.getProxies()
         self.setupDriver()
-        self.get_project()
+        self.extract_clubs()
+        self.write_pdf()
 
 if __name__ == "__main__":
     extract_object = ClubExtract() # can put compe, software, or nano i    n the constructor

@@ -76,6 +76,7 @@ class ClubExtract():
         self.list_of_urls = [a_tag.get_attribute("href") for a_tag in orgs_a_tags]
         
         print(self.list_of_urls)
+
     
     def write_pdf(self):
         document = Document()
@@ -116,6 +117,12 @@ class ClubExtract():
 
             # Engineering project club extraction
         
+    def get_project(self):
+
+        document = Document()
+
+        document.add_heading('University of Alberta Clubs', 0)
+
         self.setupDriver()
         self.driver.get(self.project_club_url)
 
@@ -124,16 +131,28 @@ class ClubExtract():
         all_project_clubs = group_container.find_elements(By.CLASS_NAME, "card")
 
         for i in range(0, len(all_project_clubs)):
-            self.setupDriver()
-            project_club = all_project_clubs[i].find_element(By.TAG_NAME, "h2").text
 
+            project_club_div = all_project_clubs[i]
+
+            html_content = all_project_clubs[i].get_attribute("outerHTML")
+
+            # Parse the HTML content with BeautifulSoup
+            soup = BeautifulSoup(html_content, "html.parser")
+
+            # Find the div with class "card-body"
+            card_body_div = soup.find("div", class_="card-body")
+
+            
+            project_club = card_body_div.find("h2").text
+
+            
             document.add_heading(project_club, level=1)
 
             description_paragraph = document.add_paragraph(style='List Bullet')
             run = description_paragraph.add_run("Club Description:")
             run.bold = True
 
-            project_club_paragraphs = all_project_clubs.find_elements(By.TAG_NAME, "p")
+            project_club_paragraphs = card_body_div.find_all("p")
 
             if project_club_paragraphs:
                 for i in range(0, len(project_club_paragraphs)):
@@ -142,13 +161,14 @@ class ClubExtract():
                     else:
                         if i == 0:
                             description_paragraph.add_run("\n" + project_club_paragraphs[i].text + "\n")
+                            print(description_paragraph)
                         else:
                             description_paragraph.add_run(project_club_paragraphs[i].text + "\n")
+                            print(description_paragraph)
             else:
                 description_paragraph.add_run('\n' + "No description found" + '\n')
             
-            os.system("taskkill /im chrome.exe /f")
-
+        os.system("taskkill /im chrome.exe /f")
 
         document.save("list_of_clubs.docx")
         self.driver.quit()
@@ -156,8 +176,7 @@ class ClubExtract():
     def run(self):
         self.getProxies()
         self.setupDriver()
-        self.extract_clubs()
-        self.write_pdf()
+        self.get_project()
 
 if __name__ == "__main__":
     extract_object = ClubExtract() # can put compe, software, or nano i    n the constructor

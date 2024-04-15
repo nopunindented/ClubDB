@@ -20,8 +20,8 @@ class CourseExtract():
         self.list_of_courses = []
         self.study_program = study_program
         engineering_urls = {'Software': "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47959&returnto=12339", 'Compe Normal': "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47952&returnto=12339", "Compe Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47954&returnto=12339", "EE Biomedical": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47927&returnto=12339", "EE Normal": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47938&returnto=12339", "EE Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47940&returnto=12339", "Enphys Normal": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47960&returnto=12339", "Enphys Nano": "https://calendar.ualberta.ca/preview_program.php?catoid=39&poid=47963&returnto=12339"}
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55167&returnto=13670']
-        self.list_of_file_paths = ['courses_ee_bio\ee_bio_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55178&returnto=13670']
+        self.list_of_file_paths = ['courses_ee_normal\ee_normal_group2_electives.txt']
         #self.compe_normal_url = 
         #self.compe_nano_url = 
         self.driver = ''
@@ -130,7 +130,6 @@ class CourseExtract():
             list_of_grp2 = []
 
         self.driver.quit()
-
         return list_of_all_grp2s
     
     def create_grp2_text(self):
@@ -197,6 +196,7 @@ class CourseExtract():
                 except:
                     pass
         
+        os.system("taskkill /im chrome.exe /f")
         self.driver.quit()
         return term_and_profs, prerequisites, course_description
     
@@ -257,7 +257,8 @@ class CourseExtract():
                 ratemyprof_rating = "The professor does not have a rating on Rate My Professor"
 
                 print(ratemyprof_rating)
-
+        
+        os.system("taskkill /im chrome.exe /f")
         self.driver.quit()
             
         return ratemyprof_rating

@@ -15,7 +15,10 @@ def vectordb(file, directory):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     all_splits = text_splitter.split_documents(docs)
 
-    nested_directory_path = os.path.join(directory, "chroma_db")
+    if file == 'courses\list_of_clubs.pdf':
+        nested_directory_path = os.path.join(directory, "clubs_chroma_db")
+    else:
+        nested_directory_path = os.path.join(directory, "chroma_db")
 
     # Create the nested directory if it doesn't exist
     os.makedirs(nested_directory_path, exist_ok=True)
@@ -45,3 +48,6 @@ if __name__ == "__main__":
                     convert(nested_item_path, pdf_file_path)
 
                     vectordb(pdf_file_path, item_path)
+                    convert('courses\list_of_clubs.docx', 'courses\list_of_clubs.pdf')
+
+                    vectordb('courses\list_of_clubs.pdf', 'courses')

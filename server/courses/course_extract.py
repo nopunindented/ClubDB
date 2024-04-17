@@ -16,8 +16,8 @@ from reddit_extract import RedditExtract
 class CourseExtract():
 
     def __init__(self):
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55178&returnto=13670']
-        self.list_of_file_paths = ['courses_ee_normal\ee_normal_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670']
+        self.list_of_file_paths = ['courses_enphys_nano\enphys_nano_group2_electives.txt']
         self.driver = ''
     
     def getProxies(self):
@@ -100,7 +100,7 @@ class CourseExtract():
                 list_of_non_grp2s = list_of_non_grp2_ee_nano
             elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55200&returnto=13670":
                 list_of_non_grp2s = list_of_non_grp2_enphys_normal
-            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55180&returnto=13670":
+            elif self.engineering_url[i] == "https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670":
                 list_of_non_grp2s = list_of_non_grp2_enphys_nano
             
             
@@ -136,6 +136,10 @@ class CourseExtract():
             file_path = self.list_of_file_paths[i]
             if not os.path.exists(file_path):
                 with open(file_path, 'w') as file:
+                    last_element = list_of_all_grp2s[i][-1]  # Get the last element
+                    if last_element.endswith('\n'):  # Check if it ends with '\n'
+                        last_element = last_element.rstrip('\n')  # Remove trailing newline character if exists
+                        list_of_all_grp2s[i][-1] = last_element  # Set the modified last element
                     file.writelines(list_of_all_grp2s[i])
 
     def course_description_extract(self, course_name):
@@ -271,6 +275,8 @@ class CourseExtract():
             with open(discipline, "r") as file:
 
                 for course in file:
+                    if course.strip() == "":
+                        exit()
                     self.setupDriver()
                     terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
                     document.add_heading(course, level=1)
@@ -427,7 +433,6 @@ class CourseExtract():
         self.extract_group_two()
 
 if __name__ == "__main__":
-    extract_object = CourseExtract() # can put compe, software, or nano i    n the constructor
-    # extract_object.course_description_extract('ece 321')
+    extract_object = CourseExtract()
 
     extract_object.run()

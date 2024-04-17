@@ -11,7 +11,7 @@ import os
 from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
-from langchain_community.llms import HuggingFaceEndpoint
+from langchain_community.llms import HuggingFaceHub
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
@@ -88,7 +88,7 @@ class RedditExtract():
         
     def llm_opinion(self, course):
         load_dotenv()
-        HUGGINGFACEHUB_API_TOKEN_COURSE = os.getenv("HUGGINGFACEHUB_API_TOKEN_COURSE")
+        HUGGINGFACEHUB_API_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
         reddit_comments = self.check_if_course_valid(course)
 
         template = """You will have to judge the difficulty of a university course, based off of comments from the social media site Reddit.
@@ -105,8 +105,8 @@ class RedditExtract():
 
         repo_id = "mistralai/Mistral-7B-Instruct-v0.2"
 
-        llm = HuggingFaceEndpoint(
-              repo_id=repo_id, max_kwargs = 100, temperature=0.1, token=HUGGINGFACEHUB_API_TOKEN_COURSE
+        llm = HuggingFaceHub(
+              repo_id=repo_id, model_kwargs={"temperature": 0.1, "max_length": 100,"max_new_tokens":512}
         )
 
         prompt = PromptTemplate(template=template, input_variables=['course', 'context'])

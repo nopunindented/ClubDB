@@ -28,8 +28,6 @@ if __name__ == "__main__":
 
     directory_path = os.getcwd()
 
-    repo = Repo('C:\\umer files\\Programming PREJE\'S\\OfCourse')
-
     contents = os.listdir(directory_path)
 
     for file in contents:
@@ -46,14 +44,4 @@ if __name__ == "__main__":
                     pdf_file_path = file_minus_extension[0] + '.pdf'
                     convert(nested_item_path, pdf_file_path)
 
-                    repo.git.add(update=True)
-
-                    # Commit changes
-                    repo.index.commit("Automated commit after converting {}".format(file))
-
                     vectordb(pdf_file_path, item_path)
-
-                    repo.git.add(update=True)
-
-                    # Commit changes
-                    repo.index.commit("Automated commit after processing {}".format(file))

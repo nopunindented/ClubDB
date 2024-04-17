@@ -4,6 +4,7 @@ from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 import os
 from docx2pdf import convert
+from git import Repo
 
 def vectordb(file, directory):
     loader = PyPDFLoader(file)
@@ -43,4 +44,13 @@ if __name__ == "__main__":
                     pdf_file_path = file_minus_extension[0] + '.pdf'
                     convert(nested_item_path, pdf_file_path)
 
+                    Repo.git.add(update=True) # Stage changes
+
+                    # Commit changes
+                    Repo.index.commit("Automated commit after converting {}".format(file))
+
                     vectordb(pdf_file_path, item_path)
+
+                    Repo.git.add(update=True)
+
+                    Repo.index.commit("Automated commit after processing {}".format(file))

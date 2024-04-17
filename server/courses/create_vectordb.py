@@ -12,7 +12,7 @@ def vectordb(file, directory):
     embeddings = HuggingFaceEmbeddings()
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
-    all_splits = text_splitter.split_documents(text_splitter)
+    all_splits = text_splitter.split_documents(docs)
 
     nested_directory_path = os.path.join(directory, "chroma_db")
 

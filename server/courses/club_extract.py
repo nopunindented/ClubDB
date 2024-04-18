@@ -67,7 +67,7 @@ class ClubExtract():
         self.driver.get("https://alberta.campuslabs.ca/engage/organizations")
         org_results = self.driver.find_element(By.ID, "org-search-results")
 
-        for i in range(0, 48):
+        for i in range(0, 8):
             outlined_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.driver.find_element(By.CLASS_NAME, "outlinedButton")))
             outlined_button.click()
         

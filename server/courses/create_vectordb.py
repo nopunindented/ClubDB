@@ -10,7 +10,15 @@ def vectordb(file, directory):
     loader = PyPDFLoader(file)
     docs = loader.load()
 
-    embeddings = HuggingFaceEmbeddings()
+    model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
+    model_kwargs = {'device': 'cpu'}
+    encode_kwargs = {'normalize_embeddings': False}
+
+    embeddings = HuggingFaceEmbeddings(
+            model_name=model_name,
+            model_kwargs=model_kwargs,
+            encode_kwargs=encode_kwargs
+    )
 
     text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     all_splits = text_splitter.split_documents(docs)

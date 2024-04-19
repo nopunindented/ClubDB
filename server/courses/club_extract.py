@@ -6,6 +6,7 @@ import random
 import undetected_chromedriver as uc
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.action_chains import ActionChains
 from selenium.common.exceptions import NoSuchElementException
 import os
 from docx import *
@@ -13,6 +14,7 @@ from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import time
+from selenium.webdriver.common.keys import Keys
 
 class ClubExtract():
     def __init__(self):
@@ -83,18 +85,24 @@ class ClubExtract():
             if index == 40:
                 stem_option = item
         
-        stem_option.find_element(By.XPATH, ".//input[@type='checkbox']")
-        stem_option.click()
-        
-        time.sleep(5)
-        org_results = self.driver.find_element(By.ID, "org-search-results")
-        print(org_results)
+        stem_option.find_element(By.XPATH, ".//input[@type='checkbox']").click()
 
+        stem_option.send_keys(Keys.ESCAPE)
         for i in range(0, 8):
-            outlined_button = WebDriverWait(self.driver, 10).until(
-                EC.element_to_be_clickable((By.CLASS_NAME, "outlinedButton"))
-            )
-            self.driver.execute_script("arguments[0].click();" , outlined_button)
+
+            outlined_button_div = main_root.find_element(By.CLASS_NAME, 'outlinedButton')
+            outlined_button = outlined_button_div.find_element(By.TAG_NAME, "button")
+            outlined_button.click()
+            # Wait for the button to be clickable
+
+            # Click the outlined button
+            # self.driver.execute_script("arguments[0].click();", outlined_button)
+
+        org_results = WebDriverWait(self.driver, 10).until(
+            EC.visibility_of_element_located((By.ID, "org-search-results"))
+        )
+
+        print(org_results)
         
         orgs_a_tags = org_results.find_elements(By.TAG_NAME, 'a')
 

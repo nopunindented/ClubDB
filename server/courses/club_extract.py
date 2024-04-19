@@ -66,13 +66,35 @@ class ClubExtract():
     
     def extract_clubs(self):
         self.driver.get("https://alberta.campuslabs.ca/engage/organizations")
-        self.driver.get("https://alberta.campuslabs.ca/engage/organizations?categories=512")
+
+        dropdown = self.driver.find_element(By.CSS_SELECTOR, ".MuiSelect-root")
+        dropdown.click()
+
+        dropdown_div = self.driver.find_element(By.ID, "menu-")
+        dropdown_menu = WebDriverWait(dropdown_div, 5).until(
+            EC.visibility_of_element_located((By.CSS_SELECTOR, ".MuiPaper-root.MuiMenu-paper.MuiPopover-paper.MuiPaper-elevation8.MuiPaper-rounded"))
+        )
+        
+        list_element = dropdown_menu.find_element(By.CSS_SELECTOR, ".MuiList-root.MuiMenu-list.MuiList-padding")
+        list_items = list_element.find_elements(By.TAG_NAME, "li")
+
+        stem_option = ''
+        for index, item in enumerate(list_items):
+            if index == 40:
+                stem_option = item
+        
+        stem_option.find_element(By.XPATH, ".//input[@type='checkbox']")
+        stem_option.click()
+        
+        time.sleep(5)
         org_results = self.driver.find_element(By.ID, "org-search-results")
         print(org_results)
 
         for i in range(0, 8):
-            outlined_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.driver.find_element(By.CLASS_NAME, "outlinedButton")))
-            outlined_button.click()
+            outlined_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, "outlinedButton"))
+            )
+            self.driver.execute_script("arguments[0].click();" , outlined_button)
         
         orgs_a_tags = org_results.find_elements(By.TAG_NAME, 'a')
 

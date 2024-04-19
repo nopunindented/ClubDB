@@ -12,6 +12,7 @@ from docx import *
 from fake_useragent import UserAgent
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import time
 
 class ClubExtract():
     def __init__(self):
@@ -65,7 +66,9 @@ class ClubExtract():
     
     def extract_clubs(self):
         self.driver.get("https://alberta.campuslabs.ca/engage/organizations")
+        self.driver.get("https://alberta.campuslabs.ca/engage/organizations?categories=512")
         org_results = self.driver.find_element(By.ID, "org-search-results")
+        print(org_results)
 
         for i in range(0, 8):
             outlined_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(self.driver.find_element(By.CLASS_NAME, "outlinedButton")))

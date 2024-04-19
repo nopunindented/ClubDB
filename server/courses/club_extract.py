@@ -67,42 +67,39 @@ class ClubExtract():
         self.driver = uc.Chrome(options=chrome_options, seleniumwire_options=seleniumwire_options)
     
     def extract_clubs(self):
-        self.driver.get("https://alberta.campuslabs.ca/engage/organizations")
-
-        dropdown = self.driver.find_element(By.CSS_SELECTOR, ".MuiSelect-root")
-        dropdown.click()
-
-        dropdown_div = self.driver.find_element(By.ID, "menu-")
-        dropdown_menu = WebDriverWait(dropdown_div, 5).until(
-            EC.visibility_of_element_located((By.CSS_SELECTOR, ".MuiPaper-root.MuiMenu-paper.MuiPopover-paper.MuiPaper-elevation8.MuiPaper-rounded"))
-        )
+        url = "https://alberta.campuslabs.ca/engage/organizations?query=STEM"
+        self.driver.get(url)
+        self.driver.maximize_window()
         
-        list_element = dropdown_menu.find_element(By.CSS_SELECTOR, ".MuiList-root.MuiMenu-list.MuiList-padding")
-        list_items = list_element.find_elements(By.TAG_NAME, "li")
-
-        stem_option = ''
-        for index, item in enumerate(list_items):
-            if index == 40:
-                stem_option = item
-        
-        stem_option.find_element(By.XPATH, ".//input[@type='checkbox']").click()
-
-        stem_option.send_keys(Keys.ESCAPE)
-        for i in range(0, 8):
-
-            outlined_button_div = main_root.find_element(By.CLASS_NAME, 'outlinedButton')
-            outlined_button = outlined_button_div.find_element(By.TAG_NAME, "button")
+        """
+        for i in range(0, 1):
+            time.sleep(10)  # Add a delay for better observation
+            outlined_button = WebDriverWait(self.driver, 10).until(
+                EC.element_to_be_clickable((By.CLASS_NAME, "outlinedButton"))
+            )
+            print("Clicking the button...")  # Debug message
             outlined_button.click()
-            # Wait for the button to be clickable
+            print("Button clicked.")
+            time.sleep(10)
+            c= self.driver.current_url
+            print(c)
+        """
 
-            # Click the outlined button
-            # self.driver.execute_script("arguments[0].click();", outlined_button)
+        for i in range(0, 14):
+            outlined_button = WebDriverWait(self.driver, 10).until(
+                    EC.element_to_be_clickable((By.CLASS_NAME, "outlinedButton"))
+                )
+            
+            print("Clicking the button...")  # Debug message
+            outlined_button.click()
 
+
+        time.sleep(15)
+
+        
         org_results = WebDriverWait(self.driver, 10).until(
             EC.visibility_of_element_located((By.ID, "org-search-results"))
         )
-
-        print(org_results)
         
         orgs_a_tags = org_results.find_elements(By.TAG_NAME, 'a')
 

@@ -86,18 +86,20 @@ class ClubExtract():
         """
 
         for i in range(0, 14):
-            outlined_button = WebDriverWait(self.driver, 10).until(
-                    EC.element_to_be_clickable((By.CLASS_NAME, "outlinedButton"))
-                )
-            
-            print("Clicking the button...")  # Debug message
-            outlined_button.click()
+            try:
+                outlined_button = WebDriverWait(self.driver, 10).until(
+                        EC.element_to_be_clickable((By.CLASS_NAME, "outlinedButton"))
+                    )
+                print("Clicking the button...")  # Debug message
+                outlined_button.click()
+            except NoSuchElementException:
+                break
 
 
-        time.sleep(15)
+        time.sleep(7)
 
         
-        org_results = WebDriverWait(self.driver, 10).until(
+        org_results = WebDriverWait(self.driver, 8).until(
             EC.visibility_of_element_located((By.ID, "org-search-results"))
         )
         

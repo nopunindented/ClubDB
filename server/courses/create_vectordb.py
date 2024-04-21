@@ -1,7 +1,7 @@
 from langchain_community.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma, FAISS
 import os
 from docx2pdf import convert
 from git import Repo
@@ -24,14 +24,16 @@ def vectordb(file, directory):
     all_splits = text_splitter.split_documents(docs)
 
     if file == 'list_of_clubs.pdf':
-        nested_directory_path = "clubs_chroma_db"
+        nested_directory_path = "clubs_faiss"
     else:
-        nested_directory_path = os.path.join(directory, "chroma_db")
+        nested_directory_path = os.path.join(directory, "faiss")
 
     # Create the nested directory if it doesn't exist
     os.makedirs(nested_directory_path, exist_ok=True)
 
-    db = Chroma.from_documents(all_splits, embeddings, persist_directory = nested_directory_path)
+    db = FAISS.from_documents(all_splits, embeddings)
+
+    db.save_local(nested_directory_path)
 
     return db
 

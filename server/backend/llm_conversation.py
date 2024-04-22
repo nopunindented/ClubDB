@@ -3,7 +3,7 @@ from langchain_community.document_loaders import PyPDFLoader
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain, RetrievalQA
-from langchain.memory import ConversationSummaryMemory, ConversationBufferMemory,VectorStoreRetrieverMemory
+from langchain.memory import ConversationSummaryMemory, ConversationBufferMemory
 from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -65,15 +65,12 @@ class LLMConversations():
             vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
             print(vector_store)
         
-        """
         # LLM aspects initialized
-        memory = ConversationBufferMemory(
-            memory_key='chat_history', return_messages=True, output_key='answer')
-        model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
-        model_kwargs = {'device': 'cpu'}
-        encode_kwargs = {'normalize_embeddings': False}
-        """
 
+        memory = ConversationBufferMemory(memory_key='chat_history', output_key='answer')
+        memory_two = ConversationBufferMemory(
+            memory_key='chat_history', return_messages=True, output_key='answer')
+        
         if self.discipline_or_clubs == 'clubs':
             template = """A student will ask you a variety of questions regarding clubs at the University of Alberta.
             Using your knowledge store, make sure to answer the user's questions using the information you have.
@@ -93,7 +90,7 @@ class LLMConversations():
     
 
         prompt = PromptTemplate(template=template, input_variables=['context','question'])
-        llm_chain = LLMChain(prompt=prompt, llm=llm)
+        # llm_chain = LLMChain(prompt=prompt, llm=llm)
 
         while True:
             question = input('Ask any question you have regarding clubs & student organizations at the UofA: ')
@@ -105,6 +102,7 @@ class LLMConversations():
             #    "question": question,
             #    "context": matching_docs
             # })
+
             retrieval_chain = RetrievalQA.from_chain_type(
                 llm=llm, chain_type="stuff", retriever=retriever,
                 verbose=True,
@@ -116,10 +114,12 @@ class LLMConversations():
                     input_key="question"),
                 })
             print(retrieval_chain.run({"query": question}))
+
             #print(retrieval_chain.run((question)))
             #print(answer(question)["answer"])
 
-            #answer = ConversationalRetrievalChain.from_llm(llm, retriever=retriever, memory=memory)
+            #answer = ConversationalRetrievalChain.from_llm(llm, 
+            #        retriever=retriever, memory=memory, return_source_documents=True, combine_docs_chain_kwargs={'prompt': prompt})
             #print(answer(question)["answer"])
 
 if __name__ == "__main__":

@@ -4,7 +4,7 @@ from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from langchain.chains import ConversationalRetrievalChain, RetrievalQA
 from langchain.memory import ConversationSummaryMemory, ConversationBufferMemory,VectorStoreRetrieverMemory
-from langchain_community.vectorstores import Chroma, FAISS
+from langchain_community.vectorstores import FAISS
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_core.vectorstores import VectorStoreRetriever
@@ -30,32 +30,7 @@ class LLMConversations():
 
         current_directory = os.getcwd()
         parent_directory = os.path.dirname(current_directory)
-        vector_store = ''
 
-        if self.discipline_or_clubs == "compe normal":
-            vector_store = os.path.join(parent_directory, "courses_compe/chroma_db")
-        elif self.discipline_or_clubs == "compe nano":
-            vector_store = os.path.join(parent_directory, "courses_compe_nano/chroma_db")
-        elif self.discipline_or_clubs == "software":
-            vector_store = os.path.join(parent_directory, "courses_softe/chroma_db")
-        elif self.discipline_or_clubs == "ee bio":
-            vector_store = os.path.join(parent_directory, "courses_ee_bio/chroma_db")
-        elif self.discipline_or_clubs == "ee nano":
-            vector_store = os.path.join(parent_directory, "courses_ee_nano/chroma_db")
-        elif self.discipline_or_clubs == "ee normal":
-            vector_store = os.path.join(parent_directory, "courses_ee_normal/chroma_db")
-        elif self.discipline_or_clubs == "enphys nano":
-            vector_store = os.path.join(parent_directory, "courses_enphys_nano/chroma_db")
-        elif self.discipline_or_clubs == "enphys normal":
-            vector_store = os.path.join(parent_directory, "courses_enphys_normal/chroma_db")
-        elif self.discipline_or_clubs == "clubs":
-            vector_store = os.path.join(parent_directory, "clubs_chroma_db")
-            print(vector_store)
-        
-
-        # LLM aspects initialized
-        memory = ConversationBufferMemory(
-            memory_key='chat_history', return_messages=True, output_key='answer')
         model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
         model_kwargs = {'device': 'cpu'}
         encode_kwargs = {'normalize_embeddings': False}
@@ -66,7 +41,38 @@ class LLMConversations():
             encode_kwargs=encode_kwargs
         )
 
-        db = Chroma(persist_directory=vector_store, embedding_function=embeddings)
+        vector_store = ''
+
+        if self.discipline_or_clubs == "compe normal":
+            vector_store = os.path.join(parent_directory, "courses_compe/faiss")
+        elif self.discipline_or_clubs == "compe nano":
+            vector_store = os.path.join(parent_directory, "courses_compe_nano/faiss")
+        elif self.discipline_or_clubs == "software":
+            vector_store = os.path.join(parent_directory, "courses_softe/faiss")
+        elif self.discipline_or_clubs == "ee bio":
+            vector_store = os.path.join(parent_directory, "courses_ee_bio/faiss")
+        elif self.discipline_or_clubs == "ee nano":
+            vector_store = os.path.join(parent_directory, "courses_ee_nano/faiss")
+        elif self.discipline_or_clubs == "ee normal":
+            vector_store = os.path.join(parent_directory, "courses_ee_normal/faiss")
+        elif self.discipline_or_clubs == "enphys nano":
+            vector_store = os.path.join(parent_directory, "courses_enphys_nano/faiss")
+        elif self.discipline_or_clubs == "enphys normal":
+            vector_store = os.path.join(parent_directory, "courses_enphys_normal/faiss")
+        elif self.discipline_or_clubs == "clubs":
+            vector_store_directory = os.path.join(parent_directory, "./courses/clubs_faiss")
+            print(vector_store_directory)
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+            print(vector_store)
+        
+        """
+        # LLM aspects initialized
+        memory = ConversationBufferMemory(
+            memory_key='chat_history', return_messages=True, output_key='answer')
+        model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
+        model_kwargs = {'device': 'cpu'}
+        encode_kwargs = {'normalize_embeddings': False}
+        """
 
         if self.discipline_or_clubs == 'clubs':
             template = """A student will ask you a variety of questions regarding clubs at the University of Alberta.
@@ -82,13 +88,7 @@ class LLMConversations():
 
             Helpful answer:
             """
-            loader = PyPDFLoader('list_of_clubs.pdf')
-            docs = loader.load()
-
-            text_splitter = RecursiveCharacterTextSplitter(chunk_size = 1000, chunk_overlap = 240)
-            all_splits = text_splitter.split_documents(docs)
-            library = FAISS.from_documents(all_splits, embedding=embeddings)
-            retriever = library.as_retriever(search_kwargs={"k": 40})
+            retriever = vector_store.as_retriever(search_kwargs={"k": 60})
             #memory = VectorStoreRetrieverMemory(retriever=retriever, memory_key="chat_history", return_docs=False, return_messages=True)
     
 

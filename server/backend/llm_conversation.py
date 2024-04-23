@@ -61,9 +61,7 @@ class LLMConversations():
             vector_store = os.path.join(parent_directory, "courses_enphys_normal/faiss")
         elif self.discipline_or_clubs == "clubs":
             vector_store_directory = os.path.join(parent_directory, "./courses/clubs_faiss")
-            print(vector_store_directory)
             vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
-            print(vector_store)
         
         # LLM aspects initialized
 
@@ -78,12 +76,12 @@ class LLMConversations():
             Using your knowledge store, make sure to answer the user's questions using the information you have.
             The user may ask questions such as on what clubs they should join based off of their interests, what club may the best for them to help them in their career, what clubs may be the best for them based off of their university major, and so much more
             Only answer the question in the context of clubs at the University of Alberta. Make sure to give the information while keeping in mind the best clubs that fit what the question is asking.
-            Answer the question {question} in the context of clubs at the University of Alberta to the best of your knowledge, and do not make up any information.
+            Answer the question {question} in the context of clubs at the University of Alberta to the best of your knowledge, and do not make up any information (say you don't know if you do not know).
             DO NOT MAKE UP ANY INFORMATION. Also, when answering questions about which clubs to join based off of the student's interests or what major or university program they plan to go into, also take the club name into consideration (e.g. if the student is interested in computer engineering, the best club to join would be the computer engineering club.)
-            Only return the helpful answer below and nothing else.
+            Only return the helpful answer below and nothing else. DO not make up any information. After responding to a question, make sure to say something like "I hope this helps! Let me know if you have any other questions." or something similar to it.
 
             question: {question}
-            History: {chat_history}
+            Conversation history (make sure to remember this as the student may ask you about questions they asked or answers you gave at certain points in the conversation): {chat_history}
             Use this context to answer the question: {context}
 
             Helpful answer:

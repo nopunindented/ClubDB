@@ -19,14 +19,16 @@ def vectordb(file, directory):
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs
     )
-
-    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
-    all_splits = text_splitter.split_documents(docs)
+    text_splitter = ''
 
     if file == 'list_of_clubs.pdf':
         nested_directory_path = "clubs_faiss"
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     else:
         nested_directory_path = os.path.join(directory, "faiss")
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
+    
+    all_splits = text_splitter.split_documents(docs)
 
     # Create the nested directory if it doesn't exist
     os.makedirs(nested_directory_path, exist_ok=True)

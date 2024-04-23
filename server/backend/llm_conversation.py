@@ -111,12 +111,12 @@ class LLMConversations():
 
             Helpful answer:
             """
-            retriever = vector_store.as_retriever(search_kwargs={"k": 220})
+            retriever = vector_store.as_retriever(search_kwargs={"k": 80})
         
         else:
             template = """A student in the """ + self.discipline_or_clubs + """ major will ask you a variety of questions regarding Group 2 Electives offered at the University of Alberta for their elective.
             Using your knowledge store, make sure to answer the user's questions using the information you have.
-            The user may ask questions such as on what courses they should take based off of their interests, what course is offered during a certain term, what instructor teaches a certain course at a certain term, how the professor is (when asked how the professor is, give the professor's Rate My Professor rating or if it isn't available, say that it isn't available), or what courses may the best to take for certain career aspirations, or what the course difficulty is, and so much more.
+            The user may ask questions such as on what courses they should take based off of their interests, what courses are offered during certain terms, what instructor teaches a certain course at a certain term, how the professor is (when asked how the professor is, give the professor's Rate My Professor rating or if it isn't available, say that it isn't available), or what courses may the best to take for certain career aspirations, or what the course difficulty is, and so much more.
             Only answer the question in the context of clubs at the University of Alberta. Make sure to give the answer based off of the information that fits what the question is asking.
             Answer the question {question} in the context of courses offered for the """ + self.discipline_or_clubs + """ major at the University of Alberta to the best of your knowledge, and do not make up any information (say you don't know if you do not know).
             DO NOT MAKE UP ANY INFORMATION. Also, when answering questions on what the course is about or a student wanting to take course(s) based off of their interests, make sure to keep the course description in mind.
@@ -131,7 +131,7 @@ class LLMConversations():
 
             Helpful answer:
             """
-            retriever = vector_store.as_retriever(search_kwargs={"k": 120})
+            retriever = vector_store.as_retriever(search_kwargs={"k": 15})
             
         prompt = PromptTemplate(template=template, input_variables=['context','question','chat_history'])
         # llm_chain = LLMChain(prompt=prompt, llm=llm)

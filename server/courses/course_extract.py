@@ -12,12 +12,13 @@ from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
 from reddit_extract import RedditExtract
+from docx.enum.text import WD_BREAK
 
 class CourseExtract():
 
     def __init__(self):
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670']
-        self.list_of_file_paths = ['courses_enphys_nano\enphys_nano_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55192&returnto=13670']
+        self.list_of_file_paths = ['courses_compe\compe_group2_electives.txt']
         self.driver = ''
     
     def getProxies(self):
@@ -27,7 +28,10 @@ class CourseExtract():
         total_rows = len(table)
         with open("proxies.txt", 'w') as file:
             for index, row in enumerate(table):
-                if row.find_all('td')[4].text == 'elite proxy' and row.find_all('td')[5].text == 'yes':
+                print(row.find_all('td')[4].text)
+                print(row.find_all('td')[5].text == 'yes')
+                # row.find_all('td')[4].text == 'elite proxy' and 
+                if row.find_all('td')[5].text == 'yes':
                     proxy = ':'.join([row.find_all('td')[0].text, row.find_all('td')[1].text])
                     file.write(proxy)
                     if index < total_rows - 1:
@@ -411,6 +415,7 @@ class CourseExtract():
                     course_difficulty_run.bold = True
 
                     course_difficulty_paragraph.add_run(course_rating)
+                    document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
                     os.system("taskkill /im chrome.exe /f")
                     self.driver.quit()

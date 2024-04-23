@@ -7,11 +7,12 @@ import undetected_chromedriver as uc
 from seleniumwire import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import NoSuchElementException
+from langchain.chains import ConversationalRetrievalChain
 import os
 from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
-from langchain_community.llms import HuggingFaceHub
+from langchain_community.llms import HuggingFaceEndpoint
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
@@ -103,10 +104,13 @@ class RedditExtract():
         Helpful answer:
         """
 
-        repo_id = "mistralai/Mistral-7B-Instruct-v0.2"
+        repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 
-        llm = HuggingFaceHub(
-              repo_id=repo_id, model_kwargs={"temperature": 0.1, "max_length": 100,"max_new_tokens":512}
+        llm = HuggingFaceEndpoint(
+              repo_id=repo_id,
+              task ="text-generation",
+              temperature= 0.1,
+              model_kwargs={"max_length":80000}
         )
 
         prompt = PromptTemplate(template=template, input_variables=['course', 'context'])
@@ -116,7 +120,6 @@ class RedditExtract():
         if reddit_comments.strip()=='' or reddit_comments.strip()=="":
             course_difficulty = "Insufficient information available on course difficulty"
         else:
-            print(reddit_comments)
             course_difficulty = llm_chain.run({
                 "course": course,
                 "context": reddit_comments

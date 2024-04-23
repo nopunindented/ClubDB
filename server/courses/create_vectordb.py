@@ -1,4 +1,4 @@
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_community.document_loaders import PyPDFLoader, PDFPlumberLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma, FAISS
@@ -7,7 +7,7 @@ from docx2pdf import convert
 from git import Repo
 
 def vectordb(file, directory):
-    loader = PyPDFLoader(file)
+    loader = PDFPlumberLoader(file)
     docs = loader.load()
 
     model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
@@ -57,6 +57,7 @@ if __name__ == "__main__":
 
                     file_minus_extension = nested_item_path.split('.')
                     pdf_file_path = file_minus_extension[0] + '.pdf'
+                    print(pdf_file_path)
                     convert(nested_item_path, pdf_file_path)
 
                     vectordb(pdf_file_path, item_path)

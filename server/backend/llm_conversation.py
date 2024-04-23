@@ -43,22 +43,30 @@ class LLMConversations():
 
         vector_store = ''
 
-        if self.discipline_or_clubs == "compe normal":
-            vector_store = os.path.join(parent_directory, "courses_compe/faiss")
-        elif self.discipline_or_clubs == "compe nano":
-            vector_store = os.path.join(parent_directory, "courses_compe_nano/faiss")
-        elif self.discipline_or_clubs == "software":
-            vector_store = os.path.join(parent_directory, "courses_softe/faiss")
-        elif self.discipline_or_clubs == "ee bio":
-            vector_store = os.path.join(parent_directory, "courses_ee_bio/faiss")
-        elif self.discipline_or_clubs == "ee nano":
-            vector_store = os.path.join(parent_directory, "courses_ee_nano/faiss")
-        elif self.discipline_or_clubs == "ee normal":
-            vector_store = os.path.join(parent_directory, "courses_ee_normal/faiss")
-        elif self.discipline_or_clubs == "enphys nano":
-            vector_store = os.path.join(parent_directory, "courses_enphys_nano/faiss")
-        elif self.discipline_or_clubs == "enphys normal":
-            vector_store = os.path.join(parent_directory, "courses_enphys_normal/faiss")
+        if self.discipline_or_clubs == "Computer Engineering":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_compe/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Computer Engineering - Nanoscale System Design":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_compe_nano/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Software Engineering":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_softe/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Electrical Engineering - Biomedical Engineering Option":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_ee_bio/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Electrical Engineering - Nanoengineering Option":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_ee_nano/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Electrical Engineering":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_ee_normal/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Engineering Physics - Nanoengineering Option":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_enphys_nano/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+        elif self.discipline_or_clubs == "Engineering Physics":
+            vector_store_directory = os.path.join(parent_directory, "./courses/courses_enphys_normal/faiss")
+            vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
         elif self.discipline_or_clubs == "clubs":
             vector_store_directory = os.path.join(parent_directory, "./courses/clubs_faiss")
             vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
@@ -68,10 +76,10 @@ class LLMConversations():
         memory = ConversationBufferMemory(
             memory_key='chat_history', return_messages=True, output_key='answer')
         
-        memory_two = ConversationBufferMemory(
-            memory_key='chat_history', return_messages=True, output_key='answer')
+        question = ''
         
         if self.discipline_or_clubs == 'clubs':
+            question_to_be = input('Ask any question you have regarding clubs & student organizations at the UofA: ')
             template = """A student will ask you a variety of questions regarding clubs at the University of Alberta.
             Using your knowledge store, make sure to answer the user's questions using the information you have.
             The user may ask questions such as on what clubs they should join based off of their interests, what club may the best for them to help them in their career, what clubs may be the best for them based off of their university major, and so much more
@@ -86,15 +94,31 @@ class LLMConversations():
 
             Helpful answer:
             """
-            retriever = vector_store.as_retriever(search_kwargs={"k": 60})
             #memory = VectorStoreRetrieverMemory(retriever=retriever, memory_key="chat_history", return_docs=False, return_messages=True)
-    
+            retriever = vector_store.as_retriever(search_kwargs={"k": 80})
+        elif self.discipline_or_clubs == "Engineering Physics - Nanoengineering Option":
+            template = """A student in the """ + self.discipline_or_clubs + """ major will ask you a variety of questions regarding Technical Electives offered at the University of Alberta for their elective.
+            Using your knowledge store, make sure to answer the user's questions using the information you have.
+            The user may ask questions such as on what courses they should take based off of their interests, what course is offered during a certain term, what instructor teaches a certain course at a certain term, how the professor is (when asked how the professor is, give the professor's Rate My Professor rating or if it isn't available, say that it isn't available), or what courses may the best to take for certain career aspirations, or what the course difficulty is, and so much more.
+            Only answer the question in the context of clubs at the University of Alberta. Make sure to give the answer based off of the information that fits what the question is asking.
+            Answer the question {question} in the context of courses offered for the """ + self.discipline_or_clubs + """ major at the University of Alberta to the best of your knowledge, and do not make up any information (say you don't know if you do not know).
+            DO NOT MAKE UP ANY INFORMATION. Also, when answering questions on what the course is about or a student wanting to take course(s) based off of their interests, make sure to keep the course description in mind.
+            Only return the helpful answer below and nothing else. DO not make up any information. After responding to a question, make sure to say something like "I hope this helps! Let me know if you have any other questions." or something similar to it.
+            Remember, DO NOT make up any information such as course names or courses, instructors, course descriptions, when courses are being offered, etc.
+            Also, if a student asks you when a course is being offered, do not list the prerequisites as being offered as well (unless they really are). Not all of a course's prerequisites are offered at the same time a course is being offered at. Carefully check if a course is being offered during a certain period before saying that it is.
+            question: {question}
+            Conversation history (make sure to remember this as the student may ask you about questions they asked or answers you gave at certain points in the conversation): {chat_history}
+            Use this context to answer the question: {context}
 
+            Helpful answer:
+            """
+            retriever = vector_store.as_retriever(search_kwargs={"k": 65})
+            
         prompt = PromptTemplate(template=template, input_variables=['context','question','chat_history'])
         # llm_chain = LLMChain(prompt=prompt, llm=llm)
 
         while True:
-            question = input('Ask any question you have regarding clubs & student organizations at the UofA: ')
+            question = input(f'Ask any question you have regarding courses for the {self.discipline_or_clubs} program at the UofA: ')
 
 
             #matching_docs = db.similarity_search(question)
@@ -125,7 +149,7 @@ class LLMConversations():
             print(answer(question)["answer"])
 
 if __name__ == "__main__":
-    test_run = LLMConversations('clubs')
+    test_run = LLMConversations('Engineering Physics - Nanoengineering Option')
 
     test_run.electives()
 

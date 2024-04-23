@@ -83,6 +83,7 @@ class LLMConversations():
             Only return the helpful answer below and nothing else.
 
             question: {question}
+            History: {chat_history}
             Use this context to answer the question: {context}
 
             Helpful answer:
@@ -91,7 +92,7 @@ class LLMConversations():
             #memory = VectorStoreRetrieverMemory(retriever=retriever, memory_key="chat_history", return_docs=False, return_messages=True)
     
 
-        prompt = PromptTemplate(template=template, input_variables=['context','question'])
+        prompt = PromptTemplate(template=template, input_variables=['context','question','chat_history'])
         # llm_chain = LLMChain(prompt=prompt, llm=llm)
 
         while True:

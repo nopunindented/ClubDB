@@ -424,7 +424,7 @@ class CourseExtract():
 
                     course_difficulty_paragraph.add_run(course_rating)
                     
-                    if current_index == total_lines:
+                    if current_index < total_lines:
                         document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
                     os.system("taskkill /im chrome.exe /f")

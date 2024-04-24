@@ -12,7 +12,7 @@ import os
 from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
-from langchain_community.llms import HuggingFaceHub
+from langchain_community.llms import HuggingFaceEndpoint
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
@@ -99,7 +99,8 @@ class RedditExtract():
         Do not ever explicitly talk about the people who made the comments, or mention the comments themselves. You only want to summarize the difficulty.
         Do not talk about a professor either, as the professor changes constantly. You only want to summarize the difficulty.
         Provide a summary on the difficulty (make sure to explicitly mention how difficult it is) of the course using the context provided.
-        
+        Do not include derogatory language in the summary.
+
         Context: {context}
         Only return the helpful answer below and nothing else.
         Helpful answer:
@@ -107,7 +108,7 @@ class RedditExtract():
 
         repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
 
-        llm = HuggingFaceHub(
+        llm = HuggingFaceEndpoint(
               repo_id=repo_id,
               task ="text-generation",
               temperature= 0.1,
@@ -121,7 +122,7 @@ class RedditExtract():
         if reddit_comments.strip()=='' or reddit_comments.strip()=="":
             course_difficulty = "Insufficient information available on course difficulty"
         else:
-            course_difficulty = llm_chain.invoke({
+            course_difficulty = llm_chain.run({
                 "course": course,
                 "context": reddit_comments
             })

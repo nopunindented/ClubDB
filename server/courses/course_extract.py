@@ -275,10 +275,18 @@ class CourseExtract():
                 document.add_heading('Program & Technical Electives', 0)
             else:
                 document.add_heading('Group 2 Electives', 0)
+            
+            total_lines = 0
+
+            with open(discipline, "r") as file:
+                total_lines = sum(1 for _ in file)
+            
+            current_index = 0
 
             with open(discipline, "r") as file:
 
                 for course in file:
+                    current_index += 1
                     if course.strip() == "":
                         exit()
                     self.setupDriver()
@@ -415,7 +423,9 @@ class CourseExtract():
                     course_difficulty_run.bold = True
 
                     course_difficulty_paragraph.add_run(course_rating)
-                    document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
+                    
+                    if current_index == total_lines:
+                        document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
                     os.system("taskkill /im chrome.exe /f")
                     self.driver.quit()

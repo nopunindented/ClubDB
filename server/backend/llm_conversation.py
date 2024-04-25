@@ -98,13 +98,16 @@ class LLMConversations():
         elif self.discipline_or_clubs == "Engineering Physics - Nanoengineering Option":
             template = """A student in the """ + self.discipline_or_clubs + """ major will ask you a variety of questions regarding Technical Electives offered at the University of Alberta for their elective.
             Using your knowledge store, make sure to answer the user's questions using the information you have.
-            The user may ask questions such as on what courses they should take based off of their interests, what course is offered during a certain term, what instructor teaches a certain course at a certain term, how the professor is (when asked how the professor is, give the professor's Rate My Professor rating or if it isn't available, say that it isn't available), or what courses may the best to take for certain career aspirations, or what the course difficulty is, and so much more.
+            The user may ask questions such as on what courses they should take based off of their interests, what course is offered during a certain term, what instructor teaches a certain course at a certain term, how the professor is (when asked how the professor is, give the professor's Rate My Professor rating or if it isn't available, say that there isn't a Rate My Professor rating available), or what courses may the best to take for certain career aspirations, or what the course difficulty is, and so much more.
             Only answer the question in the context of clubs at the University of Alberta. Make sure to give the answer based off of the information that fits what the question is asking.
             Answer the question {question} in the context of courses offered for the """ + self.discipline_or_clubs + """ major at the University of Alberta to the best of your knowledge, and do not make up any information (say you don't know if you do not know).
             DO NOT MAKE UP ANY INFORMATION. Also, when answering questions on what the course is about or a student wanting to take course(s) based off of their interests, make sure to keep the course description in mind.
             Only return the helpful answer below and nothing else. DO not make up any information. After responding to a question, make sure to say something like "I hope this helps! Let me know if you have any other questions." or something similar to it.
             Remember, DO NOT make up any information such as course names or courses, instructors, course descriptions, when courses are being offered, etc.
             Also, if a student asks you when a course is being offered, do not list the prerequisites as being offered as well (unless they really are). Not all of a course's prerequisites are offered at the same time a course is being offered at. Carefully check if a course is being offered during a certain period before saying that it is. Do not confuse which instructor/professor is teaching which course.
+            To recommend the best match for a course based off of a topic (such as machine learning), make sure to check the course description carefully. For example, if a student asks about the best course for machine learning, recommend the course that explicitly mentions machine learning first. If there are no courses that mention the topic the student wants a course for explicitly or if the student asks for other courses on the topic, then feel free to recommend the closest matches.
+            Also, do not state the wrong terms that a course is offered in. Only state the correct ones.
+
             question: {question}
             Conversation history (make sure to remember this as the student may ask you about questions they asked or answers you gave at certain points in the conversation): {chat_history}
             Use this context to answer the question: {context}
@@ -124,8 +127,9 @@ class LLMConversations():
             Remember, DO NOT make up any information such as course names or courses, instructors, course descriptions, when courses are being offered, etc.
             Also, if a student asks you when a course is being offered, do not list the prerequisites as being offered as well (unless they really are). Not all of a course's prerequisites are offered at the same time a course is being offered at. Carefully check if a course is being offered during a certain period before saying that it is. Do not confuse which instructor/professor is teaching which course.
             If the student asks you all the course being offered during a certain term, only list the ones actually being offered during the term. DO NOT MAKE UP INFORMATION.
+            When a student asks you about what course(s) to take based off of their interests, make sure to answer based off of the Course Description and also Course Difficulty (if the Course Difficulty section has relevant information).
 
-            question: {question}
+            Question: {question}
             Conversation history (make sure to remember this as the student may ask you about questions they asked or answers you gave at certain points in the conversation): {chat_history}
             Use this context to answer the question. Make sure to only use information from the context that correctly answers what the student is asking: {context}
 

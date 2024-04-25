@@ -99,14 +99,13 @@ class RedditExtract():
         Do not ever explicitly talk about the people who made the comments, or mention the comments themselves. You only want to summarize the difficulty.
         Do not talk about a professor either, as the professor changes constantly. You only want to summarize the difficulty.
         Provide a summary on the difficulty (make sure to explicitly mention how difficult it is) of the course using the context provided.
-        Do not include derogatory language in the summary.
 
         Context: {context}
         Only return the helpful answer below and nothing else.
         Helpful answer:
         """
 
-        repo_id = "mistralai/Mixtral-8x7B-Instruct-v0.1"
+        repo_id = "mistralai/Mistral-7B-Instruct-v0.2"
 
         llm = HuggingFaceEndpoint(
               repo_id=repo_id,

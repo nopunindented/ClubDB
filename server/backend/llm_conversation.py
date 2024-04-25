@@ -108,7 +108,7 @@ class LLMConversations():
             To recommend the best match for a course based off of a topic (such as machine learning), make sure to check the course description carefully. For example, if a student asks about the best course for machine learning, recommend the course that explicitly mentions machine learning first. If there are no courses that mention the topic the student wants a course for explicitly or if the student asks for other courses on the topic, then feel free to recommend the closest matches.
             Also, do not state the wrong terms that a course is offered in. Only state the correct ones.
 
-            question: {question}
+            Question: {question}
             Conversation history (make sure to remember this as the student may ask you about questions they asked or answers you gave at certain points in the conversation): {chat_history}
             Use this context to answer the question: {context}
 

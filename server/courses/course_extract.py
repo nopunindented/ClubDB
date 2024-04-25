@@ -270,11 +270,14 @@ class CourseExtract():
 
         for discipline in self.list_of_file_paths:
             document = Document()
+            html_file = open(f"{discipline}.html", "w")
 
             if self.engineering_url[0] == 'https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670' or self.engineering_url[0] == 'https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55200&returnto=13670':
                 document.add_heading('Program & Technical Electives', 0)
+                html_file.write("<h1>Program & Technical Electives</h1>\n")
             else:
                 document.add_heading('Group 2 Electives', 0)
+                html_file.write("<h1>Group 2 Electives</h1>\n")
             
             total_lines = 0
 
@@ -292,9 +295,15 @@ class CourseExtract():
                     self.setupDriver()
                     terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
                     document.add_heading(course, level=1)
+                    html_file.write(f"<h2>{course}</h2>\n")
                     description_paragraph = document.add_paragraph(style='List Bullet')
                     run = description_paragraph.add_run("Course Description:")
                     run.bold = True
+                    html_file.write("<ul>\n")
+                    html_file.write("<li><strong>Course Description:</strong><br>")
+                    # Append the course description to the same list item
+
+                    html_file.write(course_description + "<br></li>\n")
                     
                     # Add the course description to the parent paragraph
                     description_paragraph.add_run('\n' + course_description + "\n")
@@ -303,21 +312,30 @@ class CourseExtract():
                     print(terms_and_profs)
                     prerequisites_paragraph = document.add_paragraph(style='List Bullet')
                     if "Prerequisites" not in prerequisites and len(prerequisites.strip()) > 0:
+                        html_file.write("<li><strong>Prerequisite:</strong><br>")
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run(prerequisites.replace("Prerequisite: ", "") + "\n")
+                        html_file.write(prerequisites.replace("Prerequisite: ", "") + "<br>\n")
                     elif "Prerequisites" in prerequisites and len(prerequisites.strip()) > 0:
+                        html_file.write("<li><strong>Prerequisites:</strong><br>")
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
+                        html_file.write(prerequisites.replace("Prerequisites: ", "") + "<br>\n")
                     elif len(prerequisites.strip()) == 0:
+                        html_file.write("<li><strong>Prerequisites:</strong><br>")
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run("None" + "\n")
+                        html_file.write("None<br>\n")
+                    
+                    html_file.write("</li>\n")
                     
                     # Adding terms
                     terms_paragraph = document.add_paragraph(style='List Bullet')
                     run_terms = terms_paragraph.add_run("Terms the course is available in:" + "\n")
+                    html_file.write("<li><strong>Terms the course is available in:</strong><br>")
                     run_terms.bold = True
 
                     keys = list(terms_and_profs.keys())

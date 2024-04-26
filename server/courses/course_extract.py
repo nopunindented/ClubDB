@@ -269,15 +269,15 @@ class CourseExtract():
     def write_pdf(self):
 
         for discipline in self.list_of_file_paths:
-            document = Document()
             html_file = open(f"{discipline.replace(".txt", ".html")}", "w")
+            document = Document()
 
             if self.engineering_url[0] == 'https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670' or self.engineering_url[0] == 'https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55200&returnto=13670':
-                document.add_heading('Program & Technical Electives', 0)
                 html_file.write("<h1>Program & Technical Electives</h1>\n")
+                document.add_heading('Program & Technical Electives', 0)
             else:
-                document.add_heading('Group 2 Electives', 0)
                 html_file.write("<h1>Group 2 Electives</h1>\n")
+                document.add_heading('Group 2 Electives', 0)
             
             total_lines = 0
 
@@ -294,13 +294,14 @@ class CourseExtract():
                         exit()
                     self.setupDriver()
                     terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
-                    document.add_heading(course, level=1)
                     html_file.write(f"<h2>{course}</h2>\n")
+                    document.add_heading(course, level=1)
+
+                    html_file.write("<ul>\n")
+                    html_file.write("<li><strong>Course Description:</strong><br>")
                     description_paragraph = document.add_paragraph(style='List Bullet')
                     run = description_paragraph.add_run("Course Description:")
                     run.bold = True
-                    html_file.write("<ul>\n")
-                    html_file.write("<li><strong>Course Description:</strong><br>")
                     # Append the course description to the same list item
 
                     html_file.write(course_description + "<br></li>\n")
@@ -313,52 +314,53 @@ class CourseExtract():
                     prerequisites_paragraph = document.add_paragraph(style='List Bullet')
                     if "Prerequisites" not in prerequisites and len(prerequisites.strip()) > 0:
                         html_file.write("<li><strong>Prerequisite:</strong><br>")
+                        html_file.write(prerequisites.replace("Prerequisite: ", "") + "<br>\n")
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisite:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run(prerequisites.replace("Prerequisite: ", "") + "\n")
-                        html_file.write(prerequisites.replace("Prerequisite: ", "") + "<br>\n")
                     elif "Prerequisites" in prerequisites and len(prerequisites.strip()) > 0:
                         html_file.write("<li><strong>Prerequisites:</strong><br>")
+                        html_file.write(prerequisites.replace("Prerequisites: ", "") + "<br>\n")
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run(prerequisites.replace("Prerequisites: ", "") + "\n")
-                        html_file.write(prerequisites.replace("Prerequisites: ", "") + "<br>\n")
                     elif len(prerequisites.strip()) == 0:
                         html_file.write("<li><strong>Prerequisites:</strong><br>")
+                        html_file.write("None<br>\n")
                         run_prerequisites = prerequisites_paragraph.add_run("Prerequisites:" + "\n")
                         run_prerequisites.bold = True
                         prerequisites_paragraph.add_run("None" + "\n")
-                        html_file.write("None<br>\n")
                     
                     html_file.write("</li>\n")
                     
                     # Adding terms
+                    html_file.write("<li><strong>Terms the course is available in:</strong><br>")
                     terms_paragraph = document.add_paragraph(style='List Bullet')
                     run_terms = terms_paragraph.add_run("Terms the course is available in:" + "\n")
-                    html_file.write("<li><strong>Terms the course is available in:</strong><br>")
                     run_terms.bold = True
 
                     keys = list(terms_and_profs.keys())
 
                     if len(keys) > 0:
                         for i, key in enumerate(keys):
-                            terms_paragraph.add_run(key)
                             html_file.write(key)  # Write the term directly to the HTML file
+                            terms_paragraph.add_run(key)
                             if i < len(keys) - 1:
-                                terms_paragraph.add_run(", ")
                                 html_file.write(", ")  # Add comma to HTML file if not the last term
-                        terms_paragraph.add_run("\n")  # Add line break to the Word document
+                                terms_paragraph.add_run(", ")
                         html_file.write("<br>\n")      # Add line break to the HTML file
+                        terms_paragraph.add_run("\n")  # Add line break to the Word document
                     else:
-                        terms_paragraph.add_run("No term decided yet/not offered this year\n")  # Add default message to Word document
                         html_file.write("No term decided yet/not offered this year<br>\n")
+                        terms_paragraph.add_run("No term decided yet/not offered this year\n")  # Add default message to Word document
 
                     html_file.write("</li>\n")
                     # Adding professors
+
+                    html_file.write("<li><strong>Instructor(s):</strong><br>")
                     professors_paragraph = document.add_paragraph(style='List Bullet')
                     run_terms = professors_paragraph.add_run("Instructor(s):" + "\n")
                     run_terms.bold = True
-                    html_file.write("<li><strong>Instructor(s):</strong><br>")
 
                     counter = 0
 
@@ -367,56 +369,55 @@ class CourseExtract():
                             counter += 1
                             if counter < len(terms_and_profs):
                                 if len(instructors) == 1:
-                                    professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
                                     html_file.write(instructors[0] + " (teaching in " + term + "), ")
+                                    professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
                                 elif len(instructors) > 1:
 
                                     # Convert list to set and then back again
                                     unique_instructors = list(set(instructors))
                                     for i in range(len(unique_instructors)):
                                         if i == len(unique_instructors) - 1:
-                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                             html_file.write(unique_instructors[i] + " (teaching in " + term + "), ")
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                             break
                                         else:
-                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                             html_file.write(unique_instructors[i] + " (teaching in " + term + "), ")
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                 else:
-                                    professors_paragraph.add_run("Instructor(s) undecided for " + term + ", ")
                                     html_file.write("Instructor(s) undecided for " + term + ", ")
+                                    professors_paragraph.add_run("Instructor(s) undecided for " + term + ", ")
                             else:
                                 if len(instructors) == 1:
-                                    professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
                                     html_file.write(instructors[0] + " (teaching in " + term + "), ")
+                                    professors_paragraph.add_run(instructors[0] + " (teaching in " + term + "), ")
                                 elif len(instructors) > 1:
                                     # Remove duplicates using set and convert back to list
                                     unique_instructors = list(set(instructors))
                                     for i in range(len(unique_instructors)):
                                         if i == len(unique_instructors) - 1:
-                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + ")")
                                             html_file.write(unique_instructors[i] + " (teaching in " + term + ")")
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + ")")
                                             break
                                         else:
-                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                             html_file.write(unique_instructors[i] + " (teaching in " + term + "), ")
+                                            professors_paragraph.add_run(unique_instructors[i] + " (teaching in " + term + "), ")
                                 else:
-                                    professors_paragraph.add_run("Instructor(s) undecided for " + term + "")
                                     html_file.write("Instructor(s) undecided for " + term + "")
+                                    professors_paragraph.add_run("Instructor(s) undecided for " + term + "")
                     else:
-                        professors_paragraph.add_run("No instructor teaching the course")
                         html_file.write("No instructor teaching the course")
+                        professors_paragraph.add_run("No instructor teaching the course")
                     
-                    professors_paragraph.add_run("\n")
                     html_file.write("<br>\n")
                     html_file.write("</li>\n")
+                    professors_paragraph.add_run("\n")
 
                     
                     # Adding professor rating
-                        
+                    html_file.write("<li><strong>Instructor ratings:</strong><br>")
                     rating_paragraph = document.add_paragraph(style='List Bullet')
                     run_terms = rating_paragraph.add_run("Instructor ratings:" + "\n")
                     run_terms.bold = True
-                    html_file.write("<li><strong>Instructor ratings:</strong><br>")
 
                     list_of_profs = list(terms_and_profs.values())
                     unique_profs = []
@@ -428,29 +429,32 @@ class CourseExtract():
                             unique_profs.extend(unique_sublist)
                     
                     if len(unique_profs) == 0:
-                        rating_paragraph.add_run("No professors teaching this term, so no ratings available at all")
                         html_file.write("No professors teaching this term, so no ratings available at all")
+                        rating_paragraph.add_run("No professors teaching this term, so no ratings available at all")
                     else:
                         for i in range(len(unique_profs)):
                             professor = unique_profs[i]
                             rating = self.extract_prof(professor)
                             if i<len(unique_profs) - 1:
                                 if rating != "The professor does not have a rating on Rate My Professor":
-                                    rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}, ")
                                     html_file.write(f"{professor}'s Rate My Professor rating is {rating}, ")
+                                    rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}, ")
                                 else:
+                                    html_file.write(rating)
                                     rating_paragraph.add_run(rating)
                             else:
                                 if rating != "The professor does not have a rating on Rate My Professor":
-                                    rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}")
                                     html_file.write(f"{professor}'s Rate My Professor rating is {rating}")
+                                    rating_paragraph.add_run(f"{professor}'s Rate My Professor rating is {rating}")
                                 else:
-                                    rating_paragraph.add_run(rating)
                                     html_file.write(rating)
+                                    rating_paragraph.add_run(rating)
                     
-                    rating_paragraph.add_run("\n")
+
                     html_file.write("<br>\n")
                     html_file.write("</li>\n")
+                    rating_paragraph.add_run("\n")
+
                     os.system("taskkill /im chrome.exe /f")
 
                     self.setupDriver()
@@ -459,15 +463,17 @@ class CourseExtract():
                 
                     course_rating = course_rating_object.llm_opinion(course.strip())
 
+                    html_file.write("<li><strong>Course Difficulty:</strong><br>")
+
                     course_difficulty_paragraph = document.add_paragraph(style='List Bullet')
                     course_difficulty_run = course_difficulty_paragraph.add_run("Course Difficulty:" + "\n")
                     course_difficulty_run.bold = True
-                    html_file.write("<li><strong>Course Difficulty:</strong><br>")
 
+                    html_file.write(course_rating)
                     course_difficulty_paragraph.add_run(course_rating)
-                    html_file.add(course_rating)
                     
                     if current_index < total_lines:
+                        html_file.write("</ul>" + "\n")
                         document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
                     os.system("taskkill /im chrome.exe /f")

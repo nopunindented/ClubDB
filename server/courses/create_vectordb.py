@@ -5,6 +5,7 @@ from langchain_community.vectorstores import Chroma, FAISS
 import os
 from docx2pdf import convert
 from git import Repo
+from langchain_community.document_loaders import BSHTMLLoader
 
 def vectordb(file, directory):
     loader = PDFPlumberLoader(file)
@@ -25,8 +26,11 @@ def vectordb(file, directory):
         nested_directory_path = "clubs_faiss"
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     else:
-        nested_directory_path = os.path.join(directory, "faiss")
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
+        # nested_directory_path = os.path.join(directory, "faiss")
+        # text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
+        loader = BSHTMLLoader("example_data/fake-content.html")
+        data = loader.load()
+        print(data)
     
     all_splits = text_splitter.split_documents(docs)
 

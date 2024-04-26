@@ -294,6 +294,7 @@ class CourseExtract():
                         exit()
                     self.setupDriver()
                     terms_and_profs, prerequisites, course_description = self.course_description_extract(course)
+                    html_file.write('<div class="course">')
                     html_file.write(f"<h2>{course}</h2>\n")
                     document.add_heading(course, level=1)
 
@@ -471,9 +472,11 @@ class CourseExtract():
 
                     html_file.write(course_rating)
                     course_difficulty_paragraph.add_run(course_rating)
+
+                    html_file.write("</ul>" + "\n")
+                    html_file.write("</div>")
                     
                     if current_index < total_lines:
-                        html_file.write("</ul>" + "\n")
                         document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
                     os.system("taskkill /im chrome.exe /f")

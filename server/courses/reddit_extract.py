@@ -12,7 +12,7 @@ import os
 from docx import *
 from googlesearch import search
 from fake_useragent import UserAgent
-from langchain_community.llms import HuggingFaceEndpoint
+from langchain_community.llms import HuggingFaceEndpoint, HuggingFaceHub
 from langchain.chains import LLMChain
 from langchain.prompts import PromptTemplate
 from dotenv import load_dotenv
@@ -109,7 +109,6 @@ class RedditExtract():
 
         llm = HuggingFaceEndpoint(
               repo_id=repo_id,
-              task ="text-generation",
               temperature= 0.1,
               model_kwargs={"max_length":80000}
         )

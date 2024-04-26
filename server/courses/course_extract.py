@@ -221,6 +221,9 @@ class CourseExtract():
         except NoSuchElementException:
             print("No regular search results found")
 
+        os.system("taskkill /im chrome.exe /f")
+        self.setupDriver()
+        
         if not professor_url:
             try:
                 alt_results = self.driver.find_elements(By.CLASS_NAME, "MjjYud")
@@ -463,6 +466,7 @@ class CourseExtract():
                     course_rating_object = RedditExtract(self.driver)
                 
                     course_rating = course_rating_object.llm_opinion(course.strip())
+                    os.system("taskkill /im chrome.exe /f")
 
                     html_file.write("<li><strong>Course Difficulty:</strong><br>")
 
@@ -479,7 +483,6 @@ class CourseExtract():
                     if current_index < total_lines:
                         document.add_paragraph().add_run().add_break(WD_BREAK.PAGE)
 
-                    os.system("taskkill /im chrome.exe /f")
                     self.driver.quit()
                     
 

@@ -8,8 +8,8 @@ from git import Repo
 from langchain_community.document_loaders import BSHTMLLoader
 
 def vectordb(file, directory):
-    loader = PDFPlumberLoader(file)
-    docs = loader.load()
+    loader = ''
+    docs = ''
 
     model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
     model_kwargs = {'device': 'cpu'}
@@ -23,14 +23,17 @@ def vectordb(file, directory):
     text_splitter = ''
 
     if file == 'list_of_clubs.pdf':
+        loader = PDFPlumberLoader(file)
+        docs = loader.load()
         nested_directory_path = "clubs_faiss"
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     else:
         # nested_directory_path = os.path.join(directory, "faiss")
         # text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
-        loader = BSHTMLLoader("example_data/fake-content.html")
+        loader = BSHTMLLoader(file)
         data = loader.load()
         print(data)
+        exit()
     
     all_splits = text_splitter.split_documents(docs)
 
@@ -56,15 +59,14 @@ if __name__ == "__main__":
             directory_contents = os.listdir(item_path)
 
             for i in range(0, len(directory_contents)):
-                if ".docx" in directory_contents[i]:
+                if ".html" in directory_contents[i]:
                     nested_item_path = os.path.join(item_path, directory_contents[i])
 
                     file_minus_extension = nested_item_path.split('.')
                     pdf_file_path = file_minus_extension[0] + '.pdf'
                     print(pdf_file_path)
-                    convert(nested_item_path, pdf_file_path)
 
                     vectordb(pdf_file_path, item_path)
-    convert('list_of_clubs.docx', 'list_of_clubs.pdf')
 
+    convert('list_of_clubs.docx', 'list_of_clubs.pdf')
     vectordb('list_of_clubs.pdf', 'hello')

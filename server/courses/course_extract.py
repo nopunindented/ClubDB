@@ -17,8 +17,8 @@ from docx.enum.text import WD_BREAK
 class CourseExtract():
 
     def __init__(self):
-        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55194&returnto=13670']
-        self.list_of_file_paths = ['courses_compe\compe_nano_group2_electives.txt']
+        self.engineering_url = ['https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55178&returnto=13670']
+        self.list_of_file_paths = ['courses_ee_normal\ee_normal_group2_electives.txt']
         self.driver = ''
     
     def getProxies(self):

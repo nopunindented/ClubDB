@@ -31,15 +31,15 @@ class LLMConversations():
         current_directory = os.getcwd()
         parent_directory = os.path.dirname(current_directory)
         # "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
-        model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
+        model_name = "sentence-transformers/all-MiniLM-L6-v2"
         model_kwargs = {'device': 'cpu'}
         encode_kwargs = {'normalize_embeddings': False}
 
         embeddings = HuggingFaceEmbeddings(
-            model_name=model_name,
-            model_kwargs=model_kwargs,
-            encode_kwargs=encode_kwargs
-        )
+                    model_name=model_name,
+                    model_kwargs=model_kwargs,
+                    encode_kwargs=encode_kwargs
+            )
 
         vector_store = ''
 
@@ -135,7 +135,8 @@ class LLMConversations():
 
             Helpful answer:
             """
-            retriever = vector_store.as_retriever(search_kwargs={"k": 80})
+            vector_store = FAISS.load_local(r"C:\umer files\Programming PREJE'S\OfCourse\server\courses\test", embeddings, allow_dangerous_deserialization=True)
+            retriever = vector_store.as_retriever(search_kwargs={"k": 15})
             print(retriever)
             
         prompt = PromptTemplate(template=template, input_variables=['context','question','chat_history'])

@@ -276,10 +276,10 @@ class CourseExtract():
             document = Document()
 
             if self.engineering_url[0] == 'https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55203&returnto=13670' or self.engineering_url[0] == 'https://calendar.ualberta.ca/preview_program.php?catoid=44&poid=55200&returnto=13670':
-                html_file.write("<h1>Program & Technical Electives</h1>\n")
+                html_file.write("<title>Program & Technical Electives</title>\n")
                 document.add_heading('Program & Technical Electives', 0)
             else:
-                html_file.write("<h1>Group 2 Electives</h1>\n")
+                html_file.write("<title>Group 2 Electives</title>\n")
                 document.add_heading('Group 2 Electives', 0)
             
             total_lines = 0

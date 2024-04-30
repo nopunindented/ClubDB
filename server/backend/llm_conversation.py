@@ -135,7 +135,8 @@ class LLMConversations():
 
             Helpful answer:
             """
-            retriever = vector_store.as_retriever(search_kwargs={"k": 15})
+            retriever = vector_store.as_retriever(search_kwargs={"k": 80})
+            print(retriever)
             
         prompt = PromptTemplate(template=template, input_variables=['context','question','chat_history'])
         # llm_chain = LLMChain(prompt=prompt, llm=llm)

@@ -10,6 +10,7 @@ from langchain_community.document_loaders import BSHTMLLoader
 def vectordb(file, directory):
     loader = ''
     docs = ''
+    nested_directory_path = ''
 
     model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
     model_kwargs = {'device': 'cpu'}
@@ -20,6 +21,7 @@ def vectordb(file, directory):
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs
     )
+
     text_splitter = ''
 
     if file == 'list_of_clubs.pdf':
@@ -28,17 +30,17 @@ def vectordb(file, directory):
         nested_directory_path = "clubs_faiss"
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     else:
-        # nested_directory_path = os.path.join(directory, "faiss")
-        # text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
         loader = BSHTMLLoader(file)
-        data = loader.load()
-        print(data)
-        exit()
+        docs = loader.load()
+        nested_directory_path = os.path.join(directory, "faiss")
+        print(docs)
+        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
     
     all_splits = text_splitter.split_documents(docs)
 
     # Create the nested directory if it doesn't exist
     os.makedirs(nested_directory_path, exist_ok=True)
+
 
     db = FAISS.from_documents(all_splits, embeddings)
 
@@ -64,9 +66,8 @@ if __name__ == "__main__":
 
                     file_minus_extension = nested_item_path.split('.')
                     pdf_file_path = file_minus_extension[0] + '.pdf'
-                    print(pdf_file_path)
 
-                    vectordb(pdf_file_path, item_path)
+                    vectordb(nested_item_path, item_path)
 
     convert('list_of_clubs.docx', 'list_of_clubs.pdf')
     vectordb('list_of_clubs.pdf', 'hello')

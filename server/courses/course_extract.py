@@ -13,6 +13,7 @@ from googlesearch import search
 from fake_useragent import UserAgent
 from reddit_extract import RedditExtract
 from docx.enum.text import WD_BREAK
+from dotenv import load_dotenv
 
 class CourseExtract():
 
@@ -36,6 +37,10 @@ class CourseExtract():
                     file.write(proxy)
                     if index < total_rows - 1:
                         file.write('\n')
+    
+    def eclassLogin(self):
+        pass
+        self.driver.get('https://login.ualberta.ca/module.php/core/loginuserpass.php?AuthState=_7a1e77c8b1f9576df3d85042dd5528922c8f2a4e1a%3Ahttps%3A%2F%2Flogin.ualberta.ca%2Fsaml2%2Fidp%2FSSOService.php%3Fspentityid%3Dhttps%253A%252F%252Feclass.srv.ualberta.ca%252Fsp%26RelayState%3Dhttps%253A%252F%252Feclass.srv.ualberta.ca%252Flogin%252Findex.php%26cookieTime%3D1716702023')
 
     def setupDriver(self):
 

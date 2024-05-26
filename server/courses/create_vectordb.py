@@ -27,7 +27,7 @@ def vectordb(file, directory):
     if file == 'list_of_clubs.pdf':
         loader = PDFPlumberLoader(file)
         docs = loader.load()
-        nested_directory_path = "clubs_faiss"
+        nested_directory_path = os.path.join(directory, "clubs_faiss")
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
     else:
         loader = BSHTMLLoader(file)

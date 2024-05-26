@@ -40,6 +40,7 @@ class CourseExtract():
                         file.write('\n')
     
     def eclassLogin(self):
+        load_dotenv()
         self.driver.get('https://login.ualberta.ca/module.php/core/loginuserpass.php?AuthState=_7a1e77c8b1f9576df3d85042dd5528922c8f2a4e1a%3Ahttps%3A%2F%2Flogin.ualberta.ca%2Fsaml2%2Fidp%2FSSOService.php%3Fspentityid%3Dhttps%253A%252F%252Feclass.srv.ualberta.ca%252Fsp%26RelayState%3Dhttps%253A%252F%252Feclass.srv.ualberta.ca%252Flogin%252Findex.php%26cookieTime%3D1716702023')
         ccid = self.driver.find_element(By.ID, "username")
         username = os.getenv("CCID")
@@ -167,7 +168,15 @@ class CourseExtract():
         split_course = course_name.split()
         course_url = 'https://apps.ualberta.ca/catalogue/course/' + split_course[0].lower() + '/' + split_course[1]
 
+        self.eclassLogin()
+
+
         self.driver.get(course_url)
+
+        print("HIIIII")
+        login_button = self.driver.find_element("xpath", '//*[@id="navbar-toggle"]/div/ul/li[5]/a')
+
+        login_button.click()
 
         course_info = (self.driver.find_element("xpath", "//div[@class='container']/p[2]").text).split('.')
 

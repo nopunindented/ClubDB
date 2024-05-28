@@ -68,8 +68,10 @@ class LLMConversations():
             vector_store_directory = os.path.join(parent_directory, "./courses/courses_enphys_normal/faiss")
             vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
         elif self.discipline_or_clubs == "clubs":
-            vector_store_directory = os.path.join(parent_directory, "./courses/clubs_faiss")
+            vector_store_directory = os.path.join(parent_directory, "./courses/clubs/clubs_faiss")
             vector_store = FAISS.load_local(vector_store_directory, embeddings, allow_dangerous_deserialization=True)
+
+            print(vector_store_directory)
         
         # LLM aspects initialized
 
@@ -174,7 +176,7 @@ class LLMConversations():
             print(answer(question)["answer"])
 
 if __name__ == "__main__":
-    test_run = LLMConversations('Computer Engineering')
+    test_run = LLMConversations('clubs')
 
     test_run.electives()
 

@@ -8,9 +8,6 @@ from git import Repo
 from langchain_community.document_loaders import BSHTMLLoader
 
 def vectordb(file, directory):
-    loader = ''
-    docs = ''
-    nested_directory_path = ''
 
     model_name = "VoVanPhuc/sup-SimCSE-VietNamese-phobert-base"
     model_kwargs = {'device': 'cpu'}
@@ -21,20 +18,19 @@ def vectordb(file, directory):
             model_kwargs=model_kwargs,
             encode_kwargs=encode_kwargs
     )
+    loader = PDFPlumberLoader(file)
+    docs = loader.load()
+    nested_directory_path = os.path.join(directory, "clubs_faiss")
+    text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
 
-    text_splitter = ''
-
-    if file == 'list_of_clubs.pdf':
-        loader = PDFPlumberLoader(file)
-        docs = loader.load()
-        nested_directory_path = os.path.join(directory, "clubs_faiss")
-        text_splitter = RecursiveCharacterTextSplitter(chunk_size = 500, chunk_overlap = 50)
+    """
     else:
         loader = BSHTMLLoader(file)
         docs = loader.load()
         nested_directory_path = os.path.join(directory, "faiss")
         print(docs)
         text_splitter = RecursiveCharacterTextSplitter(chunk_size = 2000, chunk_overlap = 250)
+    """
     
     all_splits = text_splitter.split_documents(docs)
 
@@ -54,20 +50,26 @@ if __name__ == "__main__":
 
     contents = os.listdir(directory_path)
 
+    convert('clubs/list_of_clubs.docx', 'clubs/list_of_clubs.pdf')
+
     for file in contents:
         item_path = os.path.join(directory_path, file)
-
         if os.path.isdir(item_path) and "cache" not in item_path:
             directory_contents = os.listdir(item_path)
-
+            print(directory_contents)
             for i in range(0, len(directory_contents)):
-                if ".html" in directory_contents[i]:
+
+                if "list_of_clubs.pdf" == directory_contents[i]:
+                    nested_item_path = os.path.join(item_path, directory_contents[i])
+
+                    vectordb(nested_item_path, item_path)
+
+                """
+                elif ".html" in directory_contents[i]:
                     nested_item_path = os.path.join(item_path, directory_contents[i])
 
                     file_minus_extension = nested_item_path.split('.')
                     pdf_file_path = file_minus_extension[0] + '.pdf'
 
                     vectordb(nested_item_path, item_path)
-
-    convert('list_of_clubs.docx', 'list_of_clubs.pdf')
-    vectordb('list_of_clubs.pdf', 'hello')
+                """
